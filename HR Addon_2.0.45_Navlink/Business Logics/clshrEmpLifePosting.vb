@@ -123,11 +123,11 @@ Public Class clshrEmpLifePosting
         strDept = strDept ' getdepartment(stremp)
         If strType = "C" Then
             If strType = "C" And strDept = "" Then
-                strSql = "	select '',""Code"",""U_Z_EmpId"",""U_Z_FirstName"",""U_Z_DeptName"",""U_Z_PosCode"",""U_Z_PosName"",""U_Z_JobName"",""U_Z_OrgCode"",""U_Z_OrgName"","
+                strSql = "	select '',""Code"",""U_Z_EmpId"",""U_Z_FirstName"" +' '+ ""U_Z_LastName"" AS U_Z_FirstName,""U_Z_DeptName"",""U_Z_PosCode"",""U_Z_PosName"",""U_Z_JobName"",""U_Z_OrgCode"",""U_Z_OrgName"","
                 strSql = strSql & """U_Z_NewPosDate"",""U_Z_EffFromdt"",""U_Z_EffTodt"",""U_Z_AppStatus"" from ""@Z_HR_HEM4"" where ""U_Z_Posting""='N' and ""U_Z_AppStatus""='A'" ' and  ""U_Z_EmpId"" in (" & stremp & ")"
             ElseIf strType = "C" And strDept <> "" Then
                 strDept = "'" & strDept & "'"
-                strSql = "	select '',""Code"",""U_Z_EmpId"",""U_Z_FirstName"",""U_Z_DeptName"",""U_Z_PosCode"",""U_Z_PosName"",""U_Z_JobName"",""U_Z_OrgCode"",""U_Z_OrgName"","
+                strSql = "	select '',""Code"",""U_Z_EmpId"",""U_Z_FirstName"" +' '+ ""U_Z_LastName"" as U_Z_FirstName,""U_Z_DeptName"",""U_Z_PosCode"",""U_Z_PosName"",""U_Z_JobName"",""U_Z_OrgCode"",""U_Z_OrgName"","
                 strSql = strSql & """U_Z_NewPosDate"",""U_Z_EffFromdt"",""U_Z_EffTodt"",""U_Z_AppStatus"" from ""@Z_HR_HEM4"" where ""U_Z_Posting""='N' and ""U_Z_AppStatus""='A' and  ""U_Z_Dept"" in (" & strDept & ")" ' and  ""U_Z_EmpId"" in (" & stremp & ")"
             End If
             oGrid.DataTable.ExecuteQuery(strSql)

@@ -78,7 +78,7 @@ Public Class clshrLeaveRequest
             oForm.Freeze(False)
         End Try
     End Sub
-  
+
 #Region "Methods"
     Private Sub DataBind(ByVal aform As SAPbouiCOM.Form, ByVal EmpId As String)
         Try
@@ -128,7 +128,7 @@ Public Class clshrLeaveRequest
         Catch ex As Exception
             strSQL = "Select ""Code"",""Name"" from ""@Z_PAY_LEAVE"" order by ""Code"""
         End Try
-       
+
 
         oCombobox = sform.Items.Item("8").Specific
         Try
@@ -249,30 +249,30 @@ Public Class clshrLeaveRequest
                         oApplication.Utilities.InitialMessage("Leave Request", strCode, oApplication.Utilities.DocApproval(aForm, HeaderDoctype.LveReq, oApplication.Utilities.getEdittextvalue(aForm, "4"), oCombobox.Selected.Value), intTempID, oApplication.Utilities.getEdittextvalue(aForm, "4"), HistoryDoctype.LveReq)
                     End If
 
-                    End If
+                End If
             Else
-                    strCode = oApplication.Utilities.getMaxCode(strTable, "Code")
-                    oUserTable.Code = strCode
-                    oUserTable.Name = strCode
-                    oUserTable.UserFields.Fields.Item("U_Z_EMPID").Value = oApplication.Utilities.getEdittextvalue(aForm, "4")
-                    oUserTable.UserFields.Fields.Item("U_Z_EMPNAME").Value = oApplication.Utilities.getEdittextvalue(aForm, "6")
-                    oUserTable.UserFields.Fields.Item("U_Z_TransType").Value = "L"
-                    oUserTable.UserFields.Fields.Item("U_Z_TrnsCode").Value = oCombobox.Selected.Value
-                    oUserTable.UserFields.Fields.Item("U_Z_LeaveName").Value = oCombobox.Selected.Description
-                    oUserTable.UserFields.Fields.Item("U_Z_StartDate").Value = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "10"))
-                    oUserTable.UserFields.Fields.Item("U_Z_EndDate").Value = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "12"))
-                    oUserTable.UserFields.Fields.Item("U_Z_NoofDays").Value = oApplication.Utilities.getDocumentQuantity(oApplication.Utilities.getEdittextvalue(aForm, "14"))
-                    oUserTable.UserFields.Fields.Item("U_Z_Notes").Value = oApplication.Utilities.getEdittextvalue(aForm, "18")
-                    oUserTable.UserFields.Fields.Item("U_Z_ReJoiNDate").Value = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "16"))
-                    oUserTable.UserFields.Fields.Item("U_Z_Status").Value = oApplication.Utilities.DocApproval(aForm, HeaderDoctype.LveReq, oApplication.Utilities.getEdittextvalue(aForm, "4"), oCombobox.Selected.Value)
-                    Dim dtdate As Date = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "10"))
-                    oUserTable.UserFields.Fields.Item("U_Z_Year").Value = dtdate.Year
-                    oUserTable.UserFields.Fields.Item("U_Z_Month").Value = dtdate.Month
-                    oUserTable.UserFields.Fields.Item("U_Z_LevBal").Value = oApplication.Utilities.getDocumentQuantity(oApplication.Utilities.getEdittextvalue(aForm, "23"))
-                    If oUserTable.Add <> 0 Then
-                        oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
-                        Return False
-                    Else
+                strCode = oApplication.Utilities.getMaxCode(strTable, "Code")
+                oUserTable.Code = strCode
+                oUserTable.Name = strCode
+                oUserTable.UserFields.Fields.Item("U_Z_EMPID").Value = oApplication.Utilities.getEdittextvalue(aForm, "4")
+                oUserTable.UserFields.Fields.Item("U_Z_EMPNAME").Value = oApplication.Utilities.getEdittextvalue(aForm, "6")
+                oUserTable.UserFields.Fields.Item("U_Z_TransType").Value = "L"
+                oUserTable.UserFields.Fields.Item("U_Z_TrnsCode").Value = oCombobox.Selected.Value
+                oUserTable.UserFields.Fields.Item("U_Z_LeaveName").Value = oCombobox.Selected.Description
+                oUserTable.UserFields.Fields.Item("U_Z_StartDate").Value = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "10"))
+                oUserTable.UserFields.Fields.Item("U_Z_EndDate").Value = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "12"))
+                oUserTable.UserFields.Fields.Item("U_Z_NoofDays").Value = oApplication.Utilities.getDocumentQuantity(oApplication.Utilities.getEdittextvalue(aForm, "14"))
+                oUserTable.UserFields.Fields.Item("U_Z_Notes").Value = oApplication.Utilities.getEdittextvalue(aForm, "18")
+                oUserTable.UserFields.Fields.Item("U_Z_ReJoiNDate").Value = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "16"))
+                oUserTable.UserFields.Fields.Item("U_Z_Status").Value = oApplication.Utilities.DocApproval(aForm, HeaderDoctype.LveReq, oApplication.Utilities.getEdittextvalue(aForm, "4"), oCombobox.Selected.Value)
+                Dim dtdate As Date = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "10"))
+                oUserTable.UserFields.Fields.Item("U_Z_Year").Value = dtdate.Year
+                oUserTable.UserFields.Fields.Item("U_Z_Month").Value = dtdate.Month
+                oUserTable.UserFields.Fields.Item("U_Z_LevBal").Value = oApplication.Utilities.getDocumentQuantity(oApplication.Utilities.getEdittextvalue(aForm, "23"))
+                If oUserTable.Add <> 0 Then
+                    oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                    Return False
+                Else
                     oApplication.Utilities.AddUDTPayroll(aForm, strCode)
                     Dim intTempID As String = oApplication.Utilities.GetTemplateID(aForm, HeaderDoctype.LveReq, oApplication.Utilities.getEdittextvalue(aForm, "4"), oCombobox.Selected.Value)
                     If intTempID <> "0" Then
@@ -281,8 +281,8 @@ Public Class clshrLeaveRequest
                     Else
                         oApplication.Utilities.UpdateApprovalRequired("@Z_PAY_OLETRANS1", "Code", strCode, "N", intTempID)
                     End If
-                    End If
                 End If
+            End If
             Return True
         Catch ex As Exception
             oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
@@ -386,10 +386,10 @@ Public Class clshrLeaveRequest
 
     Private Sub GetLeaveBalance(ByVal aform As SAPbouiCOM.Form)
         Dim oRateRS As SAPbobsCOM.Recordset
-        Dim dblbasic As Double
+        Dim dblbasic, intDiff As Double
         Dim ayear As Integer
         Dim dtDate As Date
-        Dim strEMpID, strStartDate, strLeaveCode As String
+        Dim strEMpID, strStartDate, strLeaveCode, strCutoff As String
         strEMpID = oApplication.Utilities.getEdittextvalue(aform, "4")
         strStartDate = oApplication.Utilities.getEdittextvalue(aform, "10")
         oCombobox = aform.Items.Item("8").Specific
@@ -412,7 +412,71 @@ Public Class clshrLeaveRequest
             dblbasic = 0
         End Try
         oApplication.Utilities.setEdittextvalue(aform, "23", dblbasic)
+
+        Try
+            oRateRS.DoQuery("Select U_Z_Cutoff from ""@Z_PAY_LEAVE"" T0 where Code='" & strLeaveCode & "'")
+            strCutoff = oRateRS.Fields.Item(0).Value
+            If strCutoff = "" Then
+                strCutoff = "N"
+            Else
+                strCutoff = strCutoff
+            End If
+        Catch ex As Exception
+            strCutoff = "N"
+        End Try
+        oApplication.Utilities.setEdittextvalue(aform, "30", strCutoff)
+
+        frdate = oApplication.Utilities.getEdittextvalue(oForm, "10")
+        todate = oApplication.Utilities.getEdittextvalue(oForm, "12")
+        If frdate <> "" And todate <> "" Then
+            frdt = oApplication.Utilities.GetDateTimeValue(frdate)
+            todt = oApplication.Utilities.GetDateTimeValue(todate)
+            oApplication.Utilities.setEdittextvalue(oForm, "14", getNodays(frdt, todt))
+            intDiff = CDbl(oApplication.Utilities.getEdittextvalue(aform, "14"))
+            Dim dblHolidays As Double = getHolidayCount(oApplication.Utilities.getEdittextvalue(aform, "4"), frdt, todt, oApplication.Utilities.getEdittextvalue(aform, "30"))
+            intDiff = intDiff - dblHolidays
+            oApplication.Utilities.setEdittextvalue(oForm, "14", intDiff)
+            If dblHolidays > 0 Then
+                oApplication.Utilities.setlabeltextvalue(oForm, "31", "The leave request falls on a weekend/Holidays")
+            Else
+                oApplication.Utilities.setlabeltextvalue(oForm, "31", "")
+            End If
+        End If
     End Sub
+    Public Function getHolidayCount(Empid As String, FromDate As Date, ToDate As Date, CutOff As String) As Double
+        Dim dblHolidays As Double = 0
+        Dim oRec, oRec1, otemp As SAPbobsCOM.Recordset
+        oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        oRec1 = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        otemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        oRec.DoQuery("Select * from OHEM where empID=" & Empid)
+        If oRec.RecordCount > 0 Then
+            If oRec.Fields.Item("U_Z_HldCode").Value <> "" Then
+                oRec1.DoQuery("Select * from OHLD where HldCode='" & oRec.Fields.Item("U_Z_HldCode").Value & "'")
+                If oRec1.RecordCount > 0 Then
+                    While FromDate <= ToDate
+                        If CutOff = "B" Or CutOff = "W" Then
+                            '     MsgBox(WeekdayName(1))
+                            Dim strweekname1, strweekname2 As String
+                            strweekname1 = WeekdayName(oRec1.Fields.Item("WndFrm").Value)
+                            strweekname2 = WeekdayName(oRec1.Fields.Item("WndTo").Value)
+                            If WeekdayName(Weekday(FromDate)) = strweekname1 Or WeekdayName(Weekday(FromDate)) = strweekname2 Then
+                                dblHolidays = dblHolidays + 1
+                            End If
+                        End If
+                        If CutOff = "H" Or CutOff = "B" Then
+                            otemp.DoQuery("Select * from [HLD1] where ('" & FromDate.ToString("yyyy-MM-dd") & "' between strdate and enddate) and  hldCode='" & oRec.Fields.Item("U_Z_HldCode").Value & "'")
+                            If otemp.RecordCount > 0 Then
+                                dblHolidays = dblHolidays + 1
+                            End If
+                        End If
+                        FromDate = FromDate.AddDays(1)
+                    End While
+                End If
+            End If
+        End If
+        Return dblHolidays
+    End Function
 #Region "Item Event"
     Public Overrides Sub ItemEvent(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean)
         Try
@@ -535,15 +599,15 @@ Public Class clshrLeaveRequest
                                     'End If
 
                                 End If
-            If pVal.ItemUID = "3" Then
-                If AddToUDT(oForm) = True Then
-                    oApplication.Utilities.Message("Operation Completed Successfully", SAPbouiCOM.BoStatusBarMessageType.smt_Success)
-                    oForm.Close()
-                Else
-                    BubbleEvent = False
-                    Exit Sub
-                End If
-            End If
+                                If pVal.ItemUID = "3" Then
+                                    If AddToUDT(oForm) = True Then
+                                        oApplication.Utilities.Message("Operation Completed Successfully", SAPbouiCOM.BoStatusBarMessageType.smt_Success)
+                                        oForm.Close()
+                                    Else
+                                        BubbleEvent = False
+                                        Exit Sub
+                                    End If
+                                End If
                         End Select
                 End Select
             End If

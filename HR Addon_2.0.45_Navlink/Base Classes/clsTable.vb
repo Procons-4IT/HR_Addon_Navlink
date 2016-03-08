@@ -3130,9 +3130,9 @@ Public NotInheritable Class clsTable
             AddFields("OHEM", "Z_LocCode", "Location Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 20)
             AddFields("OHEM", "Z_LocName", "Location Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
 
-            AddFields("OHEM", "Z_HR_UnitName", "Unit Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 20)
+            AddFields("OHEM", "Z_HR_UnitName", "Unit Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
             AddFields("OHEM", "Z_HR_SecName", "Section Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
-            AddFields("OHEM", "Z_HR_BraName", "Branch Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 20)
+            AddFields("OHEM", "Z_HR_BraName", "Branch Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
             AddFields("OHEM", "Z_HR_DivCode", "Division Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 50)
             AddFields("OHEM", "Z_HR_DivName", "Division Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
 

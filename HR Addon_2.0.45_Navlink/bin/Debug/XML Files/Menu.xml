@@ -117,7 +117,7 @@ Type="1" UniqueID="z_mnu_hr_ExitRes">	</Menu>
     Type="1" UniqueID="z_mnu_hr_Period">	</Menu>
       <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_Appraisal" Image="" Position="1" String="Ratings Master"
      Type="1" UniqueID="z_mnu_hr_Ratings">	</Menu>
-      <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_Appraisal" Image="" Position="2" String="Appraisal Objective Destribution Master"
+      <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_Appraisal" Image="" Position="2" String="Appraisal Objective Distribution Master"
   Type="1" UniqueID="z_mnu_hr_ObjResult">	</Menu>
       <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_Appraisal" Image="" Position="3" String="Personal Objective Category Master"
       Type="1" UniqueID="z_mnu_hr_PeoCategory">	</Menu>     
@@ -151,7 +151,7 @@ Type="1" UniqueID="z_mnu_hr_ExitRes">	</Menu>
       Type="1" UniqueID="z_mnu_hr_TrnPlan">	</Menu>
 
 
-      <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_Training" Image="" Position="5" String="Trainner- Profile"
+      <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_Training" Image="" Position="5" String="Trainer- Profile"
   Type="1" UniqueID="Z_mnu_HR_Trainner">	</Menu>
 
 

@@ -197,12 +197,79 @@ Public Class clshrPromotion
         oGrid.SelectionMode = SAPbouiCOM.BoMatrixSelect.ms_Single
         oApplication.Utilities.AssignRowNo(oGrid, aForm)
     End Sub
+
+    Private Function GetDeptName(depid As String, achoice As String) As String
+        Dim oRecset As SAPbobsCOM.Recordset
+        Dim deptName As String
+        Try
+            oRecset = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+            If depid <> "" Then
+                If achoice = "D" Then
+                    oRecset.DoQuery("select Remarks from OUDP where Code='" & depid & "'")
+                ElseIf achoice = "P" Then
+                    oRecset.DoQuery("select descriptio from OHPS where posID='" & depid & "'")
+                ElseIf achoice = "PC" Then
+                    oRecset.DoQuery("select name from OHPS where posID='" & depid & "'")
+                End If
+                If oRecset.RecordCount > 0 Then
+                    deptName = oRecset.Fields.Item(0).Value
+                Else
+                    deptName = ""
+                End If
+                Return deptName
+            Else
+                Return ""
+            End If
+          
+        Catch ex As Exception
+            oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+        End Try
+    End Function
 #Region "AddToUDT"
     Private Function AddToUDTPromotion(ByVal aForm As SAPbouiCOM.Form) As Boolean
         Dim strTable, strCode, strdate, strefffrom, streffto, empid, strSQL As String
         Dim prodt, Efffrmdt, Efftodt As Date
         Dim oUserTable As SAPbobsCOM.UserTable
         Dim oValidateRS, otemp2, oTemp As SAPbobsCOM.Recordset
+        oTemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        '' Employee Details for promotion history
+        empid = oApplication.Utilities.getEdittextvalue(oForm, "13")
+        strSQL = "	select * from [@Z_HR_HEM2] where U_Z_EmpId=" & empid
+        oTemp.DoQuery(strSQL)
+        If oTemp.RecordCount = 0 Then
+            strSQL = "	select * from OHEM where empID=" & empid
+            oTemp.DoQuery(strSQL)
+            oUserTable = oApplication.Company.UserTables.Item("Z_HR_HEM2")
+            oValidateRS = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+            strTable = "@Z_HR_HEM2"
+            strCode = oApplication.Utilities.getMaxCode(strTable, "Code")
+            oUserTable.Code = strCode
+            oUserTable.Name = strCode
+
+            oUserTable.UserFields.Fields.Item("U_Z_EmpId").Value = empid
+
+            oUserTable.UserFields.Fields.Item("U_Z_FirstName").Value = oTemp.Fields.Item("firstName").Value
+            oUserTable.UserFields.Fields.Item("U_Z_LastName").Value = oTemp.Fields.Item("lastName").Value
+
+            oUserTable.UserFields.Fields.Item("U_Z_Dept").Value = oTemp.Fields.Item("dept").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_DeptName").Value = GetDeptName(oTemp.Fields.Item("dept").Value.ToString(), "D")
+            oUserTable.UserFields.Fields.Item("U_Z_PosCode").Value = GetDeptName(oTemp.Fields.Item("position").Value.ToString(), "PC") 'oTemp.Fields.Item("position").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_PosName").Value = GetDeptName(oTemp.Fields.Item("position").Value.ToString(), "P")
+            oUserTable.UserFields.Fields.Item("U_Z_JobCode").Value = oTemp.Fields.Item("U_Z_HR_JobstCode").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_JobName").Value = oTemp.Fields.Item("U_Z_HR_JobstName").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_OrgCode").Value = oTemp.Fields.Item("U_Z_HR_OrgstCode").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_OrgName").Value = oTemp.Fields.Item("U_Z_HR_OrgstName").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_SalCode").Value = oTemp.Fields.Item("U_Z_HR_SalaryCode").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_Status").Value = "A"
+            oUserTable.UserFields.Fields.Item("U_Z_Posting").Value = "Y"
+            oUserTable.UserFields.Fields.Item("U_Z_AppStatus").Value = "A"
+            If oUserTable.Add <> 0 Then
+                oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                Return False
+            End If
+        End If
+
+        '' Add Promotion
         strSQL = "SELECT T0.U_Z_PosName,T0.U_Z_JobCode,T0.U_Z_JobName,T0.U_Z_DeptCode,T0.U_Z_DeptName,T1.U_Z_OrgCode,T1.U_Z_OrgDesc  FROM [@Z_HR_OPOSIN]  T0 Left Join [dbo].[@Z_HR_ORGST]  T1 on T0.U_Z_PosCode=T1.U_Z_PosCode where T0.U_Z_PosCode='" & oApplication.Utilities.getEdittextvalue(oForm, "46") & "'"
         oCombobox = aForm.Items.Item("1000011").Specific
         If oApplication.Company.InTransaction() Then
@@ -231,7 +298,7 @@ Public Class clshrPromotion
 
             oUserTable.UserFields.Fields.Item("U_Z_FirstName").Value = oApplication.Utilities.getEdittextvalue(oForm, "17")
             oUserTable.UserFields.Fields.Item("U_Z_LastName").Value = oApplication.Utilities.getEdittextvalue(oForm, "1000005")
-            
+
             oUserTable.UserFields.Fields.Item("U_Z_Dept").Value = otemp2.Fields.Item("U_Z_DeptCode").Value ' oCombobox.Selected.Value
             oUserTable.UserFields.Fields.Item("U_Z_DeptName").Value = otemp2.Fields.Item("U_Z_DeptName").Value ' oApplication.Utilities.getEdittextvalue(oForm, "44")
             oUserTable.UserFields.Fields.Item("U_Z_PosCode").Value = oApplication.Utilities.getEdittextvalue(oForm, "46")
@@ -281,50 +348,11 @@ Public Class clshrPromotion
                     oApplication.Utilities.UpdateApprovalRequired("@Z_HR_HEM2", "Code", strCode, "N", intTempID)
                 End If
 
-                '    Dim oEmployee As SAPbobsCOM.EmployeesInfo
-                '    oEmployee = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oEmployeesInfo)
-                '    If oEmployee.GetByKey(oApplication.Utilities.getEdittextvalue(oForm, "13")) Then
-                '        oEmployee.FirstName = oApplication.Utilities.getEdittextvalue(oForm, "17")
-                '        oEmployee.LastName = oApplication.Utilities.getEdittextvalue(oForm, "1000005")
-                '        oEmployee.Department = oCombobox.Selected.Value
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_PosiCode").Value = oApplication.Utilities.getEdittextvalue(oForm, "46")
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_PosiName").Value = oApplication.Utilities.getEdittextvalue(oForm, "48")
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_JobstCode").Value = oApplication.Utilities.getEdittextvalue(oForm, "50")
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_JobstName").Value = oApplication.Utilities.getEdittextvalue(oForm, "52")
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_OrgstCode").Value = oApplication.Utilities.getEdittextvalue(oForm, "54")
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_OrgstName").Value = oApplication.Utilities.getEdittextvalue(oForm, "56")
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_SalaryCode").Value = oApplication.Utilities.getEdittextvalue(oForm, "58")
-                '        prodt = oApplication.Utilities.GetDateTimeValue(strdate)
-                '        oEmployee.UserFields.Fields.Item("U_Z_HR_JoinDate").Value = prodt ' oApplication.Utilities.getEdittextvalue(oForm, "61")
-                '        oEmployee.UserFields.Fields.Item("U_Z_EmpLiCyStatus").Value = "P"
-                '        If oEmployee.Update <> 0 Then
-                '            oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
-                '            If oApplication.Company.InTransaction() Then
-                '                oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack)
-                '            End If
-                '            Return False
-                '        Else
-                '            oApplication.Utilities.Message("Operation Completed successfully", SAPbouiCOM.BoStatusBarMessageType.smt_Success)
-                '        End If
-                '    End If
-
                 If oApplication.Company.InTransaction() Then
                     oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit)
                 End If
                 Return True
-
-                'If oApplication.Utilities.UpdateEmployeeProfile(oForm, oApplication.Utilities.getEdittextvalue(oForm, "13"), oApplication.Utilities.getEdittextvalue(oForm, "46"), prodt, "P", strCode) = True Then
-                '    If oApplication.Company.InTransaction() Then
-                '        oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit)
-                '    End If
-                '    Return True
-                'Else
-                '    If oApplication.Company.InTransaction() Then
-                '        oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack)
-                '    End If
-                '    Return False
-                'End If
-                End If
+            End If
 
         Catch ex As Exception
             oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
@@ -438,6 +466,7 @@ Public Class clshrPromotion
         End Try
     End Function
 #End Region
+
 #Region "Item Event"
     Public Overrides Sub ItemEvent(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean)
         Try
@@ -505,7 +534,7 @@ Public Class clshrPromotion
                                 reDrawForm(oForm)
                             Case SAPbouiCOM.BoEventTypes.et_FORM_LOAD
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)
-                                ' oItem = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oItems)
+
                             Case SAPbouiCOM.BoEventTypes.et_KEY_DOWN
                             Case SAPbouiCOM.BoEventTypes.et_COMBO_SELECT
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)

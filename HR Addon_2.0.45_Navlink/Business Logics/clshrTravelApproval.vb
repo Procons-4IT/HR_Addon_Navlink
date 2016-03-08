@@ -114,6 +114,8 @@ Public Class clshrTravelApproval
                                 End If
                             Case SAPbouiCOM.BoEventTypes.et_KEY_DOWN
                             Case SAPbouiCOM.BoEventTypes.et_FORM_RESIZE
+                                oForm = oApplication.SBO_Application.Forms.Item(FormUID)
+
                                 If oForm.State = SAPbouiCOM.BoFormStateEnum.fs_Restore Or oForm.State = SAPbouiCOM.BoFormStateEnum.fs_Maximized Then
                                     oApplication.Utilities.Resize(oForm)
                                 End If

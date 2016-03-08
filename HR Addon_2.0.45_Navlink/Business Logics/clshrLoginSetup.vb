@@ -150,23 +150,26 @@
                                         oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                                         intChoice = 0
                                         oForm.Freeze(True)
-                                        If IsNothing(oDataTable) Then
-                                            Exit Sub
-                                        End If
                                         If pVal.ItemUID = "4" Then
-                                            val = oDataTable.GetValue("empID", 0)
-                                            val2 = oDataTable.GetValue("userId", 0)
-                                            val1 = oDataTable.GetValue("firstName", 0) & " " & oDataTable.GetValue("middleName", 0) & " " & oDataTable.GetValue("lastName", 0)
-                                            oApplication.Utilities.setEdittextvalue(oForm, "18", val2)
-                                            oRec.DoQuery("Select isnull(USER_CODE,'') from OUSR where INTERNAL_K='" & val2 & "'")
-                                            If oRec.RecordCount > 0 Then
-                                                Try
-                                                    oApplication.Utilities.setEdittextvalue(oForm, "8", oRec.Fields.Item(0).Value)
-                                                Catch ex As Exception
-                                                End Try
+                                            Try
+                                                val = oDataTable.GetValue("empID", 0)
+                                                val2 = oDataTable.GetValue("userId", 0)
+                                                val1 = oDataTable.GetValue("firstName", 0) & " " & oDataTable.GetValue("middleName", 0) & " " & oDataTable.GetValue("lastName", 0)
+                                                oApplication.Utilities.setEdittextvalue(oForm, "18", val2)
+                                                oRec.DoQuery("Select isnull(USER_CODE,'') from OUSR where INTERNAL_K='" & val2 & "'")
+                                                If oRec.RecordCount > 0 Then
+                                                    Try
+                                                        oApplication.Utilities.setEdittextvalue(oForm, "8", oRec.Fields.Item(0).Value)
+                                                    Catch ex As Exception
+                                                    End Try
+                                                End If
+                                                oApplication.Utilities.setEdittextvalue(oForm, "6", val1)
+                                                oApplication.Utilities.setEdittextvalue(oForm, "4", val)
+                                            Catch ex As Exception
+                                            End Try
+                                            If oForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE Then
+                                                oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE
                                             End If
-                                            oApplication.Utilities.setEdittextvalue(oForm, "6", val1)
-                                            oApplication.Utilities.setEdittextvalue(oForm, "4", val)
                                         End If
                                         If pVal.ItemUID = "8" Then
                                             val = oDataTable.GetValue("USER_CODE", 0)
@@ -202,14 +205,7 @@
                 Case mnu_hr_Logsetup
                     LoadForm()
                 Case mnu_ADD
-                    oForm = oApplication.SBO_Application.Forms.ActiveForm()
-                    If oForm.TypeEx = frm_hr_LoginSetup Then
-                        If pVal.BeforeAction = False Then
-                            AddMode(oForm)
-                        End If
-
-                    End If
-
+                    AddMode(oForm)
                 Case mnu_InvSO
                 Case mnu_FIRST, mnu_LAST, mnu_NEXT, mnu_PREVIOUS
                     oForm.Items.Item("12").Enabled = False
@@ -224,21 +220,18 @@
     Public Sub FormDataEvent(ByRef BusinessObjectInfo As SAPbouiCOM.BusinessObjectInfo, ByRef BubbleEvent As Boolean)
         Try
             If BusinessObjectInfo.BeforeAction = False And BusinessObjectInfo.ActionSuccess = True And (BusinessObjectInfo.EventType = SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD Or BusinessObjectInfo.EventType = SAPbouiCOM.BoEventTypes.et_FORM_DATA_UPDATE) Then
-                oForm = oApplication.SBO_Application.Forms.Item(BusinessObjectInfo.FormUID)
-                If oForm.TypeEx = frm_hr_LoginSetup Then
+                oForm = oApplication.SBO_Application.Forms.ActiveForm()
 
+                Dim strEncryptText As String = oApplication.Utilities.getLoginPassword(oApplication.Utilities.getEdittextvalue(oForm, "14"))
+                oApplication.Utilities.setEdittextvalue(oForm, "14", strEncryptText) ' oApplication.Utilities.getEdittextvalue(aForm, "8")
 
-
-                    Dim strEncryptText As String = oApplication.Utilities.getLoginPassword(oApplication.Utilities.getEdittextvalue(oForm, "14"))
-                    oApplication.Utilities.setEdittextvalue(oForm, "14", strEncryptText) ' oApplication.Utilities.getEdittextvalue(aForm, "8")
-
-                    Dim strEncryptText1 As String = oApplication.Utilities.getLoginPassword(oApplication.Utilities.getEdittextvalue(oForm, "10"))
-                    oApplication.Utilities.setEdittextvalue(oForm, "10", strEncryptText1) ' oApplication.Utilities.getEdittextvalue(aForm, "8")
-                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE
-                End If
+                Dim strEncryptText1 As String = oApplication.Utilities.getLoginPassword(oApplication.Utilities.getEdittextvalue(oForm, "10"))
+                oApplication.Utilities.setEdittextvalue(oForm, "10", strEncryptText1) ' oApplication.Utilities.getEdittextvalue(aForm, "8")
+                oForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE
             End If
         Catch ex As Exception
-            MsgBox(ex.Message)
+            oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+            ' MsgBox(ex.Message)
         End Try
     End Sub
 End Class

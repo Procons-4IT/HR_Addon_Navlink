@@ -262,7 +262,7 @@ Public Class clshrFApproval
         Dim ostatic As SAPbouiCOM.StaticText
         ostatic = oForm.Items.Item("351").Specific
         ostatic.Caption = strqry
-        oGrid.Columns.Item("DocEntry").TitleObject.Caption = "Apprisal Number"
+        oGrid.Columns.Item("DocEntry").TitleObject.Caption = "Appraisal Number"
         oGrid.Columns.Item("DocEntry").Editable = False
         oEditTextColumn = oGrid.Columns.Item("DocEntry")
         oEditTextColumn.LinkedObjectType = SAPbouiCOM.BoLinkedObject.lf_Invoice
@@ -1150,7 +1150,7 @@ Public Class clshrFApproval
             Exit Sub
         End If
         oGrid.DataTable.ExecuteQuery(strqry)
-        oGrid.Columns.Item("DocEntry").TitleObject.Caption = "Apprisal Number"
+        oGrid.Columns.Item("DocEntry").TitleObject.Caption = "Appraisal Number"
         oGrid.Columns.Item("DocEntry").Editable = False
         oEditTextColumn = oGrid.Columns.Item("DocEntry")
         oEditTextColumn.LinkedObjectType = SAPbouiCOM.BoLinkedObject.lf_Invoice
@@ -3661,7 +3661,7 @@ Public Class clshrFApproval
                                 ElseIf pVal.ItemUID = "1000001" Then
                                     oForm.Freeze(True)
                                     oForm.Items.Item("8").Visible = True
-                                    oForm.PaneLevel = 0
+                                    oForm.PaneLevel = 1
                                     If oForm.Title = "HR Acceptance" Then
                                         oForm.ActiveItem = "18"
                                     ElseIf oForm.Title = "Self Appraisals" Then
@@ -3674,34 +3674,34 @@ Public Class clshrFApproval
                                     oForm.Freeze(False)
                                 ElseIf pVal.ItemUID = "5" Then
                                     oForm.Freeze(True)
-                                    oForm.PaneLevel = 1
+                                    oForm.PaneLevel = 2
                                     If oForm.Title = "HR Acceptance" Then
-                                        oForm.ActiveItem = "18"
+                                        oForm.ActiveItem = "22"
                                     ElseIf oForm.Title = "Self Appraisals" Then
-                                        oForm.ActiveItem = "15"
+                                        oForm.ActiveItem = "19"
                                     ElseIf oForm.Title = "Second Level Approval" Then
-                                        oForm.ActiveItem = "17"
+                                        oForm.ActiveItem = "21"
                                     Else
-                                        oForm.ActiveItem = "16"
+                                        oForm.ActiveItem = "20"
                                     End If
                                     oForm.Freeze(False)
                                 ElseIf pVal.ItemUID = "6" Then
                                     oForm.Freeze(True)
-                                    oForm.PaneLevel = 2
+                                    oForm.PaneLevel = 3
                                     If oForm.Title = "HR Acceptance" Then
-                                        oForm.ActiveItem = "18"
+                                        oForm.ActiveItem = "26"
                                     ElseIf oForm.Title = "Self Appraisals" Then
-                                        oForm.ActiveItem = "15"
+                                        oForm.ActiveItem = "23"
                                     ElseIf oForm.Title = "Second Level Approval" Then
-                                        oForm.ActiveItem = "17"
+                                        oForm.ActiveItem = "25"
                                     Else
-                                        oForm.ActiveItem = "16"
+                                        oForm.ActiveItem = "24"
                                     End If
                                     oForm.Freeze(False)
                                 ElseIf pVal.ItemUID = "30" Then
                                     oForm.Freeze(True)
                                     oForm.Items.Item("8").Visible = False
-                                    oForm.PaneLevel = 3
+                                    oForm.PaneLevel = 4
                                     oForm.Freeze(False)
                                 ElseIf pVal.ItemUID = "45" Then
                                     oForm.Freeze(True)
@@ -3710,7 +3710,7 @@ Public Class clshrFApproval
                                         If oGrid.Rows.IsSelected(intRow) Then
                                             strCode = oGrid.DataTable.GetValue("DocEntry", intRow)
                                             fillHRRating(oForm, oForm.Title, strCode)
-                                            oForm.PaneLevel = 4
+                                            oForm.PaneLevel = 5
                                         End If
                                     Next
                                     oForm.Freeze(False)
@@ -3722,7 +3722,7 @@ Public Class clshrFApproval
                                         If oGrid.Rows.IsSelected(intRow) Then
                                             strCode = oGrid.DataTable.GetValue("DocEntry", intRow)
                                             fillWorkFlowTimeStamp(oForm, oForm.Title, strCode)
-                                            oForm.PaneLevel = 5
+                                            oForm.PaneLevel = 6
                                         End If
                                     Next
                                     oForm.Freeze(False)

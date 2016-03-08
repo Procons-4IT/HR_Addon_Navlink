@@ -2688,6 +2688,11 @@ Public Class clsUtilities
         objEdit = aform.Items.Item(UID).Specific
         objEdit.String = newvalue
     End Sub
+    Public Sub setlabeltextvalue(ByVal aform As SAPbouiCOM.Form, ByVal UID As String, ByVal newvalue As String)
+        Dim objEdit As SAPbouiCOM.StaticText
+        objEdit = aform.Items.Item(UID).Specific
+        objEdit.Caption = newvalue
+    End Sub
 #End Region
 
 #End Region
@@ -3626,18 +3631,18 @@ Public Class clsUtilities
                         strESSLink = oTest.Fields.Item("U_Z_WebPath").Value
                     End If
                     oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"" from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocEntry & "'")
-                    Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                    Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
-                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & ",Appraisal Period on " & strPeriod & ""
-                    mail.Subject = strMessage
+                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & ""
+                    mail.Subject = "Appraisal Process Initialized"
                     mail.Body = BuildHtmBody(DocEntry, Name, "Appraisal", mType, strMessage)
-                    mail.Attachments.Add(New Net.Mail.Attachment(path))
-                    SendMessageAppraisal("Appraisal Process Initiated", strMessage, oTemp.Fields.Item(2).Value)
+                    ' mail.Attachments.Add(New Net.Mail.Attachment(path))
+                    SendMessageAppraisal("Appraisal Process Initialized", strMessage, oTemp.Fields.Item(2).Value)
                 End If
             ElseIf mType = "SF" Then
 
                 oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"",T1.U_Z_Empid from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocEntry & "'")
-                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
                 strQuery = "SELECT T1.email,isnull(T0.firstName,'') +' '+ isnull(T0.lastName,'') as 'EmpName',T1.userId from OHEM T0 JOIN OHEM T1 ON T0.Manager=T1.empID where T0.empID=" & oRecordSet.Fields.Item("U_Z_Empid").Value
                 oTemp.DoQuery(strQuery)
@@ -3649,15 +3654,15 @@ Public Class clsUtilities
                         strESSLink = oTest.Fields.Item("U_Z_WebPath").Value
                     End If
 
-                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & ",Appraisal Period on " & strPeriod & ""
-                    mail.Subject = strMessage ' "Appraisal Initialized Notification for " & Period & " on " & System.DateTime.Now.ToShortDateString()
+                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & ""
+                    mail.Subject = "First Level manager Appraisal Approval Notification" ' "Appraisal Initialized Notification for " & Period & " on " & System.DateTime.Now.ToShortDateString()
                     mail.Body = BuildHtmBody(DocEntry, Name, "Appraisal", mType, strMessage)
-                    mail.Attachments.Add(New Net.Mail.Attachment(path))
+                    ' mail.Attachments.Add(New Net.Mail.Attachment(path))
                     SendMessageAppraisal("First Level manager Appraisal Approval", strMessage, oTemp.Fields.Item(2).Value)
                 End If
             ElseIf mType = "LA" Then
                 oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"",T1.U_Z_Empid from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocEntry & "'")
-                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
                 'strQuery = "SELECT T1.email,isnull(T0.firstName,'') +' '+ isnull(T0.lastName,'') as 'EmpName',T1.userId from OHEM T0 JOIN OHEM T1 ON T0.Manager=T1.empID where T0.empID=" & oRecordSet.Fields.Item("U_Z_Empid").Value
                 '  strQuery = "SELECT isnull(T0.firstName,'') +' '+ isnull(T0.lastName,'') as 'EmpName' from OHEM T0 WHERE T0.empID =" & oRecordSet.Fields.Item("U_Z_Empid").Value & ""
@@ -3672,15 +3677,15 @@ Public Class clsUtilities
                         strESSLink = oTest.Fields.Item("U_Z_WebPath").Value
                     End If
 
-                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & ",Appraisal Period on " & strPeriod & ""
-                    mail.Subject = strMessage ' "Appraisal Initialized Notification for " & Period & " on " & System.DateTime.Now.ToShortDateString()
+                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & ""
+                    mail.Subject = "Second Level manager Appraisal Approval Notification" ' "Appraisal Initialized Notification for " & Period & " on " & System.DateTime.Now.ToShortDateString()
                     mail.Body = BuildHtmBody(DocEntry, Name, "Appraisal", mType, strMessage)
-                    mail.Attachments.Add(New Net.Mail.Attachment(path))
+                    '  mail.Attachments.Add(New Net.Mail.Attachment(path))
                     SendMessageAppraisal("Second Level manager Appraisal Approval", strMessage, oTemp.Fields.Item(1).Value)
                 End If
             ElseIf mType = "HA" Then
                 oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"",T1.U_Z_Empid from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocEntry & "'")
-                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
                 strQuery = "SELECT T1.email,(Select isnull(firstName,'') +' '+ isnull(lastName,'') from OHEM where empid=" & oRecordSet.Fields.Item("U_Z_Empid").Value & ") as 'EmpName',T1.userId from OHEM T0 JOIN OHEM T1 ON T0.Manager=T1.empID where T0.empID IN (SELECT manager FROM OHEM WHERE empID =" & oRecordSet.Fields.Item("U_Z_Empid").Value & ")"
                 oTemp.DoQuery(strQuery)
@@ -3692,15 +3697,15 @@ Public Class clsUtilities
                         strESSLink = oTest.Fields.Item("U_Z_WebPath").Value
                     End If
 
-                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & ",Appraisal Period on " & strPeriod & ""
-                    mail.Subject = strMessage
+                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & ""
+                    mail.Subject = "HR Appraisal Approval Notification"
                     mail.Body = BuildHtmBody(DocEntry, Name, "Appraisal", mType, strMessage)
-                    mail.Attachments.Add(New Net.Mail.Attachment(path))
+                    ' mail.Attachments.Add(New Net.Mail.Attachment(path))
                     SendMessageAppraisal("HR Appraisal Approval Notification", strMessage, oTemp.Fields.Item(2).Value)
                 End If
             ElseIf mType = "EN" Then
                 oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"",T1.U_Z_Empid from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocEntry & "'")
-                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
                 strQuery = "SELECT T0.email,isnull(T0.firstName,'') +' '+ isnull(T0.lastName,'') as 'EmpName',T0.userId from OHEM T0 JOIN [@Z_HR_OSEAPP] T1 ON T0.empID=T1.U_Z_EmpId where T1.DocEntry ='" & DocEntry & "'"
                 oTemp.DoQuery(strQuery)
@@ -3712,10 +3717,10 @@ Public Class clsUtilities
                         strESSLink = oTest.Fields.Item("U_Z_WebPath").Value
                     End If
 
-                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & ",Appraisal Period on " & strPeriod & ""
-                    mail.Subject = strMessage
+                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & ""
+                    mail.Subject = "Appraisal Approval finished Notification"
                     mail.Body = BuildHtmBody(DocEntry, Name, "Appraisal", mType, strMessage)
-                    mail.Attachments.Add(New Net.Mail.Attachment(path))
+                    ' mail.Attachments.Add(New Net.Mail.Attachment(path))
                     SendMessageAppraisal("Appraisal Approval finished Notification", strMessage, oTemp.Fields.Item(2).Value)
                 End If
             ElseIf mType = "AG" Then
@@ -3903,7 +3908,7 @@ Public Class clsUtilities
                             strESSLink = strESSLink
 
                             oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"" from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocNo & "'")
-                            Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                            Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
 
                             Message = "Appraisal Document No : " & DocNo & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & ",Appraisal Period on " & strPeriod & "  Need first level manager approval."
@@ -3935,9 +3940,9 @@ Public Class clsUtilities
                             strESSLink = strESSLink
 
                             oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"" from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocNo & "'")
-                            Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                            Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
-                            Message = "Appraisal Document No : " & DocNo & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & ",Appraisal Period on " & strPeriod & "   Need second level manager approval."
+                            Message = "Appraisal Document No : " & DocNo & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & "   Need second level manager approval."
                             strMesage = "<!DOCTYPE html><html><head><title>Appraisal Approval Notification</title></head><body>  <a>" & Message & "</a><a href=" & strESSLink & " >Click Here to Login to ESS</a></body></html>"
                             mail.Subject = "Second Level manager Appraisal Approval Notification"
                             mail.Body = strMesage
@@ -3950,9 +3955,9 @@ Public Class clsUtilities
                         strESSLink = strESSLink
 
                         oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"" from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocNo & "'")
-                        Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                        Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
-                        Message = "Appraisal Document No :" & DocNo & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & " ,Appraisal Period on " & strPeriod & "   Need manager approval for appraisal."
+                        Message = "Appraisal Document No :" & DocNo & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & " ," & strPeriod & "   Need manager approval for appraisal."
                         strMesage = "<!DOCTYPE html><html><head><title>Appraisal Approval Notification</title></head><body>  <a>" & Message & "</a><a href=" & strESSLink & " >Click Here to Login to ESS</a></body></html>"
                         mail.Subject = "HR Appraisal Approval Notification"
                         mail.Body = strMesage
@@ -3964,9 +3969,9 @@ Public Class clsUtilities
                         strESSLink = strESSLink
 
                         oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"" from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocNo & "'")
-                        Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "    " & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+                        Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
 
-                        Message = "Appraisal Document No :" & DocNo & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & " ,Appraisal Period on " & strPeriod & "  has finished."
+                        Message = "Appraisal Document No :" & DocNo & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & " ," & strPeriod & "  has finished."
                         strMesage = "<!DOCTYPE html><html><head><title>Appraisal Approval Notification</title></head><body>  <a>" & Message & "</a><a href=" & strESSLink & " >Click Here to Login to ESS</a></body></html>"
                         mail.Subject = "Appraisal has finished Notification"
                         mail.Body = strMesage
@@ -4181,46 +4186,63 @@ Public Class clsUtilities
         End If
 
 
-        If Not IsDBNull(strName) Then
-            oHTML = oHTML.Replace("$$Company$$", strName)
-        Else
-            oHTML = oHTML.Replace("$$Company$$", "")
-        End If
+        'If Not IsDBNull(strName) Then
+        '    oHTML = oHTML.Replace("$$Company$$", strName)
+        'Else
+        '    oHTML = oHTML.Replace("$$Company$$", "")
+        'End If
 
-        If Not IsDBNull(Address1) Then
-            oHTML = oHTML.Replace("$$Address1$$", Address1)
-        Else
-            oHTML = oHTML.Replace("$$Address1$$", "")
-        End If
+        'If Not IsDBNull(Address1) Then
+        '    oHTML = oHTML.Replace("$$Address1$$", Address1)
+        'Else
+        '    oHTML = oHTML.Replace("$$Address1$$", "")
+        'End If
 
-        If Not IsDBNull(Address2) Then
-            oHTML = oHTML.Replace("$$Address2$$", Address2)
-        Else
-            oHTML = oHTML.Replace("$$Address2$$", "")
-        End If
+        'If Not IsDBNull(Address2) Then
+        '    oHTML = oHTML.Replace("$$Address2$$", Address2)
+        'Else
+        '    oHTML = oHTML.Replace("$$Address2$$", "")
+        'End If
 
-        If Not IsDBNull(Mail) Then
-            oHTML = oHTML.Replace("$$Mail$$", Mail)
-        Else
-            oHTML = oHTML.Replace("$$Mail$$", "")
-        End If
+        'If Not IsDBNull(Mail) Then
+        '    oHTML = oHTML.Replace("$$Mail$$", Mail)
+        'Else
+        '    oHTML = oHTML.Replace("$$Mail$$", "")
+        'End If
 
+        Dim arr As String()
+        arr = strMessage.Split(",")
 
         If mtype = "AI" Then
-            oHTML = oHTML.Replace("$$Comments$$", "Appraisal Process Initiated...")
-            oHTML = oHTML.Replace("$$Messages$$", strMessage)
+            oHTML = oHTML.Replace("$$Comments$$", "Appraisal Process Initialized.")
+            oHTML = oHTML.Replace("$$Messages$$", arr(0))
+            oHTML = oHTML.Replace("$$Messages1$$", arr(1))
+            oHTML = oHTML.Replace("$$Messages2$$", arr(2))
+            oHTML = oHTML.Replace("$$Messages3$$", arr(3))
         ElseIf mtype = "SF" Then
             oHTML = oHTML.Replace("$$Comments$$", "First Level manager Appraisal Approval Notification")
-            oHTML = oHTML.Replace("$$Messages$$", strMessage)
+            oHTML = oHTML.Replace("$$Messages$$", arr(0))
+            oHTML = oHTML.Replace("$$Messages1$$", arr(1))
+            oHTML = oHTML.Replace("$$Messages2$$", arr(2))
+            oHTML = oHTML.Replace("$$Messages3$$", arr(3))
         ElseIf mtype = "LA" Then
             oHTML = oHTML.Replace("$$Comments$$", "Second Level manager Appraisal Approval Notification")
-            oHTML = oHTML.Replace("$$Messages$$", strMessage)
+            oHTML = oHTML.Replace("$$Messages$$", arr(0))
+            oHTML = oHTML.Replace("$$Messages1$$", arr(1))
+            oHTML = oHTML.Replace("$$Messages2$$", arr(2))
+            oHTML = oHTML.Replace("$$Messages3$$", arr(3))
         ElseIf mtype = "HA" Then
             oHTML = oHTML.Replace("$$Comments$$", "HR Appraisal Approval Notification...")
-            oHTML = oHTML.Replace("$$Messages$$", strMessage)
+            oHTML = oHTML.Replace("$$Messages$$", arr(0))
+            oHTML = oHTML.Replace("$$Messages1$$", arr(1))
+            oHTML = oHTML.Replace("$$Messages2$$", arr(2))
+            oHTML = oHTML.Replace("$$Messages3$$", arr(3))
         ElseIf mtype = "EN" Then
             oHTML = oHTML.Replace("$$Comments$$", "Appraisal Approval finished Notification...")
-            oHTML = oHTML.Replace("$$Messages$$", strMessage)
+            oHTML = oHTML.Replace("$$Messages$$", arr(0))
+            oHTML = oHTML.Replace("$$Messages1$$", arr(1))
+            oHTML = oHTML.Replace("$$Messages2$$", arr(2))
+            oHTML = oHTML.Replace("$$Messages3$$", arr(3))
         End If
 
 
@@ -4930,7 +4952,7 @@ Public Class clsUtilities
             Next
             Return strEmp
         Else
-            Return "99999"
+            Return "'99999'"
         End If
     End Function
     Public Sub InitializationApproval(ByVal aForm As SAPbouiCOM.Form, ByVal enDocType As modVariables.HeaderDoctype, ByVal aChoice As modVariables.HistoryDoctype)
@@ -6408,12 +6430,18 @@ Public Class clsUtilities
         Try
             aForm.Freeze(True)
             aForm.Items.Item("1").Height = (aForm.Height / 2) - 50
-            aForm.Items.Item("1").Width = aForm.Width - 10
-            aForm.Items.Item("4").Top = aForm.Items.Item("1").Top + aForm.Items.Item("1").Height + 1
+            aForm.Items.Item("1").Width = aForm.Width - 40
+            aForm.Items.Item("4").Top = aForm.Items.Item("1").Top + aForm.Items.Item("19").Height + 1
             aForm.Items.Item("5").Top = aForm.Items.Item("4").Top
             aForm.Items.Item("3").Top = aForm.Items.Item("4").Top + aForm.Items.Item("4").Height + 5
             aForm.Items.Item("3").Width = (aForm.Width / 2)
-            aForm.Items.Item("3").Height = (aForm.Height / 2) - 50
+            aForm.Items.Item("3").Height = (aForm.Height / 2) - 100
+
+            ' aForm.Items.Item("4").Top = aForm.Items.Item("19").Top + aForm.Items.Item("19").Height + 1
+            aForm.Items.Item("20").Top = aForm.Items.Item("4").Top + aForm.Items.Item("4").Height + 5
+            aForm.Items.Item("20").Width = aForm.Width - 40
+            aForm.Items.Item("20").Height = (aForm.Height / 2) - 100
+
             aForm.Items.Item("5").Left = aForm.Items.Item("3").Left + aForm.Items.Item("3").Width + 50
             aForm.Items.Item("7").Left = aForm.Items.Item("5").Left
             aForm.Items.Item("9").Left = aForm.Items.Item("5").Left
@@ -6427,6 +6455,9 @@ Public Class clsUtilities
                     aForm.Items.Item("12").Top = aForm.Items.Item("13").Top
                     aForm.Items.Item("13").Left = aForm.Items.Item("8").Left
                     aForm.Items.Item("12").Left = aForm.Items.Item("7").Left
+
+                    aForm.Items.Item("18").Width = aForm.Width - 30
+                    aForm.Items.Item("18").Height = aForm.Height - 100
                 Catch ex As Exception
 
                 End Try
@@ -6452,9 +6483,13 @@ Public Class clsUtilities
             Else
                 aForm.Items.Item("10").Top = aForm.Items.Item("8").Top + aForm.Items.Item("8").Height + 1
                 aForm.Items.Item("9").Top = aForm.Items.Item("10").Top
+                aForm.Items.Item("16").Width = aForm.Width - 30
+                aForm.Items.Item("16").Height = aForm.Height - 100
             End If
         
-           
+          
+
+          
          
             aForm.Freeze(False)
         Catch ex As Exception
@@ -6809,7 +6844,7 @@ Public Class clsUtilities
             oRecordSet.DoQuery(strQuery)
             If Not oRecordSet.EoF Then
                 strMessageUser = oRecordSet.Fields.Item(0).Value
-                oMessage.Subject = strReqType + ":" + "Need Your Approval "
+                oMessage.Subject = strReqType + " " + "Need Your Approval "
                 Dim strMessage As String = ""
                 Dim strheader As String = enDocType
                 Select Case enDocType
@@ -6836,7 +6871,7 @@ Public Class clsUtilities
                     Case HistoryDoctype.NewTra
                         strQuery = "Select * from  [@Z_HR_ONTREQ]  where DocEntry='" & strReqNo & "'"
                         oTemp.DoQuery(strQuery)
-                        strMessage = "Submitted by   " & oTemp.Fields.Item("U_Z_HREmpName").Value
+                        strMessage = " New training request " & oTemp.Fields.Item("U_Z_CourseName").Value & " number is " & strReqNo & "  Submitted by   " & oTemp.Fields.Item("U_Z_HREmpName").Value
                         strOrginator = strMessage
                     Case HistoryDoctype.EmpPos
                         strQuery = "Select * from  [@Z_HR_HEM4]  where Code='" & strReqNo & "'"
@@ -6899,6 +6934,8 @@ Public Class clsUtilities
 
                 If strheader = 0 Then
                     oMessage.Text = "Expense Claim :" & strReqNo & " " & strOrginator & " is awaiting your approval."   'strReqType + "  " + strReqNo + " with Expenses :  " + strExpNo + " " + strOrginator + " Needs Your Approval "
+                ElseIf strheader = 2 Then
+                    oMessage.Text = strOrginator + " Needs Your Approval "
                 Else
                     oMessage.Text = strReqType + "  " + strReqNo + " " + strOrginator + " Needs Your Approval "
                 End If
@@ -6923,6 +6960,8 @@ Public Class clsUtilities
                 If strheader = 0 Then
                     'strEmailMessage = strReqType + "  " + strReqNo + " with Expenses :  " + strExpNo + " " + strOrginator + " Needs Your Approval "
                     strEmailMessage = "Expense Claim :" & strReqNo & " " & strOrginator & " is awaiting your approval."
+                ElseIf strheader = 2 Then
+                    strEmailMessage = strOrginator + " Needs Your Approval "
                 Else
                     strEmailMessage = strReqType + "  " + strReqNo + " " + strOrginator + " Needs Your Approval "
                 End If
@@ -7140,14 +7179,14 @@ Public Class clsUtilities
                   
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
                     ElseIf strDocCurrency = SystemCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
                     ElseIf reimbused = "N" Then
-                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf reimbused = "Y" Then
-                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value)
                     End If
                 End If
              
@@ -7196,14 +7235,14 @@ Public Class clsUtilities
                 Else
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
                     ElseIf strDocCurrency = SystemCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
                     ElseIf reimbused = "N" Then
-                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf reimbused = "Y" Then
-                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value)
                     End If
                 End If
               

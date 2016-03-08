@@ -677,11 +677,11 @@ Public Class clshrTrainner
                 Return False
             End If
 
-            If oApplication.Utilities.getEdittextvalue(aForm, "32") = "" Then
-                oApplication.Utilities.Message("Date of Birth is missing...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
-                aForm.Items.Item("32").Click(SAPbouiCOM.BoCellClickType.ct_Regular)
-                Return False
-            End If
+            'If oApplication.Utilities.getEdittextvalue(aForm, "32") = "" Then
+            '    oApplication.Utilities.Message("Date of Birth is missing...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+            '    aForm.Items.Item("32").Click(SAPbouiCOM.BoCellClickType.ct_Regular)
+            '    Return False
+            'End If
             'If oApplication.Utilities.getEdittextvalue(aForm, "1000009") = "" Then
             '    oApplication.Utilities.Message("Main Skill set is missing...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
             '    Return False

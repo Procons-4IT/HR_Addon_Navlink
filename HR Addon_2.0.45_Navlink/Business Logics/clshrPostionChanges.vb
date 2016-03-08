@@ -162,26 +162,14 @@ Public Class clshrPostionChanges
             oCFLCreationParams.UniqueID = "CFL4"
             oCFL = oCFLs.Add(oCFLCreationParams)
         Catch ex As Exception
-            MsgBox(ex.Message)
+            oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
         End Try
     End Sub
-    'Private Sub FillDepartment(ByVal sform As SAPbouiCOM.Form)
-    '    oCombobox = sform.Items.Item("1000011").Specific
-    '    Dim oSlpRS As SAPbobsCOM.Recordset
-    '    oSlpRS = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-    '    oSlpRS.DoQuery("Select Code,Name from OUDP")
-    '    oCombobox.ValidValues.Add("", "")
-    '    For intRow As Integer = 0 To oSlpRS.RecordCount - 1
-    '        oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
-    '        oSlpRS.MoveNext()
-    '    Next
-    '    sform.Items.Item("1000011").DisplayDesc = True
-    'End Sub
+   
     Private Sub Gridbind(ByVal strempid As String, ByVal aForm As SAPbouiCOM.Form)
-        Dim strqry, strQry1 As String
+        Dim strqry As String
         oGrid = aForm.Items.Item("10").Specific
         oGrid.DataTable = oForm.DataSources.DataTables.Item("DT_0")
-        ' strQry1 = "Select U_Z_HRAPPID from [@Z_HR_HEM1] where U_Z_Dept='" & oCombobox.Selected.Value & "' and U_Z_ReqNo='" & oApplication.Utilities.getEdittextvalue(aForm, "20") & "' and Name =Code"
         strqry = "	select ""U_Z_EmpId"",""U_Z_DeptName"",""U_Z_PosCode"",""U_Z_PosName"",""U_Z_JobCode"",""U_Z_JobName"",""U_Z_OrgCode"",""U_Z_OrgName"",""U_Z_SalCode"","
         strqry = strqry & """U_Z_EffFromdt"",""U_Z_EffTodt"",case ""U_Z_AppStatus"" when 'P' then 'Pending' when 'A' then 'Approved' when 'R' then 'Rejected' end as ""U_Z_AppStatus"" from ""@Z_HR_HEM4"" where ""U_Z_EmpId""='" & strempid & "' "
         oGrid.DataTable.ExecuteQuery(strqry)
@@ -196,7 +184,7 @@ Public Class clshrPostionChanges
         oGrid.Columns.Item("U_Z_JobName").TitleObject.Caption = "Job Name"
         oGrid.Columns.Item("U_Z_OrgCode").TitleObject.Caption = "Organization Code"
         oGrid.Columns.Item("U_Z_OrgName").TitleObject.Caption = "Organization Name"
-        oGrid.Columns.Item("U_Z_SalCode").TitleObject.Caption = "Salary Code"
+        oGrid.Columns.Item("U_Z_SalCode").Visible = False ' = "Salary Code"
         oGrid.Columns.Item("U_Z_EffFromdt").TitleObject.Caption = "Effective From"
         oGrid.Columns.Item("U_Z_EffTodt").TitleObject.Caption = "Effective To"
         oGrid.Columns.Item("U_Z_AppStatus").TitleObject.Caption = "Approval Status"
@@ -204,12 +192,79 @@ Public Class clshrPostionChanges
         oGrid.SelectionMode = SAPbouiCOM.BoMatrixSelect.ms_None
         oApplication.Utilities.AssignRowNo(oGrid, aForm)
     End Sub
+    Private Function GetDeptName(depid As String, achoice As String) As String
+        Dim oRecset As SAPbobsCOM.Recordset
+        Dim deptName As String
+        Try
+            oRecset = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+            If depid <> "" Then
+                If achoice = "D" Then
+                    oRecset.DoQuery("select Remarks from OUDP where Code='" & depid & "'")
+                ElseIf achoice = "P" Then
+                    oRecset.DoQuery("select descriptio from OHPS where posID='" & depid & "'")
+                ElseIf achoice = "PC" Then
+                    oRecset.DoQuery("select name from OHPS where posID='" & depid & "'")
+                End If
+                If oRecset.RecordCount > 0 Then
+                    deptName = oRecset.Fields.Item(0).Value
+                Else
+                    deptName = ""
+                End If
+                Return deptName
+            Else
+                Return ""
+            End If
+
+        Catch ex As Exception
+            oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+        End Try
+    End Function
 #Region "AddToUDT"
     Private Function AddToUDTPositionChanges(ByVal aForm As SAPbouiCOM.Form) As Boolean
         Dim strTable, strCode, strdate, strefffrom, streffto, strSQL As String
         Dim prodt, Efffrmdt, Efftodt As Date
         Dim oUserTable As SAPbobsCOM.UserTable
         Dim oValidateRS, otemp2, oTemp As SAPbobsCOM.Recordset
+        Dim strDeptCode, empid As String
+        '' Employee Details for Position Changes history
+        oTemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        empid = oApplication.Utilities.getEdittextvalue(oForm, "13")
+        strSQL = "	select * from [@Z_HR_HEM4] where U_Z_EmpId=" & empid
+        oTemp.DoQuery(strSQL)
+        If oTemp.RecordCount = 0 Then
+            strSQL = "	select * from OHEM where empID=" & empid
+            oTemp.DoQuery(strSQL)
+            oUserTable = oApplication.Company.UserTables.Item("Z_HR_HEM4")
+            oValidateRS = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+            strTable = "@Z_HR_HEM4"
+            strCode = oApplication.Utilities.getMaxCode(strTable, "Code")
+            oUserTable.Code = strCode
+            oUserTable.Name = strCode
+
+            oUserTable.UserFields.Fields.Item("U_Z_EmpId").Value = empid
+
+            oUserTable.UserFields.Fields.Item("U_Z_FirstName").Value = oTemp.Fields.Item("firstName").Value
+            oUserTable.UserFields.Fields.Item("U_Z_LastName").Value = oTemp.Fields.Item("lastName").Value
+
+            oUserTable.UserFields.Fields.Item("U_Z_Dept").Value = oTemp.Fields.Item("dept").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_DeptName").Value = GetDeptName(oTemp.Fields.Item("dept").Value.ToString(), "D")
+            oUserTable.UserFields.Fields.Item("U_Z_PosCode").Value = GetDeptName(oTemp.Fields.Item("position").Value.ToString(), "PC") 'oTemp.Fields.Item("position").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_PosName").Value = GetDeptName(oTemp.Fields.Item("position").Value.ToString(), "P")
+            oUserTable.UserFields.Fields.Item("U_Z_JobCode").Value = oTemp.Fields.Item("U_Z_HR_JobstCode").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_JobName").Value = oTemp.Fields.Item("U_Z_HR_JobstName").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_OrgCode").Value = oTemp.Fields.Item("U_Z_HR_OrgstCode").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_OrgName").Value = oTemp.Fields.Item("U_Z_HR_OrgstName").Value.ToString()
+            oUserTable.UserFields.Fields.Item("U_Z_Status").Value = "A"
+            oUserTable.UserFields.Fields.Item("U_Z_Posting").Value = "Y"
+            oUserTable.UserFields.Fields.Item("U_Z_AppStatus").Value = "A"
+            If oUserTable.Add <> 0 Then
+                oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                Return False
+            End If
+        End If
+
+        '' Add Position Changes
+
         Try
             strSQL = "SELECT T0.U_Z_PosName,T0.U_Z_JobCode,T0.U_Z_JobName,T0.U_Z_DeptCode,T0.U_Z_DeptName,T1.U_Z_OrgCode,T1.U_Z_OrgDesc  FROM [@Z_HR_OPOSIN]  T0 Left Join [dbo].[@Z_HR_ORGST]  T1 on T0.U_Z_PosCode=T1.U_Z_PosCode where T0.U_Z_PosCode='" & oApplication.Utilities.getEdittextvalue(oForm, "46") & "'"
             oCombobox = aForm.Items.Item("1000011").Specific
@@ -217,7 +272,6 @@ Public Class clshrPostionChanges
                 oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit)
             End If
             otemp2 = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-            Dim strDeptCode, empid As String
             empid = oApplication.Utilities.getEdittextvalue(oForm, "13")
             Dim strEmpName As String
             otemp2.DoQuery("Select * ,isnull(firstName,'') + '' + isnull(middleName,'') +' ' + isnull(lastName,'') 'EmName' from OHEM where empID=" & empid)

@@ -170,14 +170,14 @@ Public Class clshrAppraisalDistribution
         Dim strCode, strECode, strESocial, strEname, strETax, strGLAcc As String
         Dim OCHECKBOXCOLUMN As SAPbouiCOM.CheckBoxColumn
         oTemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-        oTemp.DoQuery("Select * from ""@Z_HR_OARE"" where U_Z_Obj='Business Objective'")
+        oTemp.DoQuery("Select * from ""@Z_HR_OARE"" where U_Z_Obj='Business Objectives'")
         If oTemp.RecordCount > 0 Then
         Else
             oUserTable = oApplication.Company.UserTables.Item("Z_HR_OARE")
             strCode = oApplication.Utilities.getMaxCode("@Z_HR_OARE", "Code")
             oUserTable.Code = strCode
             oUserTable.Name = strCode
-            oUserTable.UserFields.Fields.Item("U_Z_Obj").Value = "Business Objective"
+            oUserTable.UserFields.Fields.Item("U_Z_Obj").Value = "Business Objectives"
             oUserTable.UserFields.Fields.Item("U_Z_Weight").Value = 0
             If oUserTable.Add <> 0 Then
                 oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
@@ -189,14 +189,14 @@ Public Class clshrAppraisalDistribution
             End If
         End If
 
-        oTemp.DoQuery("Select * from ""@Z_HR_OARE"" where U_Z_Obj='Comptencies'")
+        oTemp.DoQuery("Select * from ""@Z_HR_OARE"" where U_Z_Obj='Competencies'")
         If oTemp.RecordCount > 0 Then
         Else
             oUserTable = oApplication.Company.UserTables.Item("Z_HR_OARE")
             strCode = oApplication.Utilities.getMaxCode("@Z_HR_OARE", "Code")
             oUserTable.Code = strCode
             oUserTable.Name = strCode
-            oUserTable.UserFields.Fields.Item("U_Z_Obj").Value = "Comptencies"
+            oUserTable.UserFields.Fields.Item("U_Z_Obj").Value = "Competencies"
             oUserTable.UserFields.Fields.Item("U_Z_Weight").Value = 0
             If oUserTable.Add <> 0 Then
                 oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
@@ -208,14 +208,14 @@ Public Class clshrAppraisalDistribution
             End If
         End If
 
-        oTemp.DoQuery("Select * from ""@Z_HR_OARE"" where U_Z_Obj='People Objective'")
+        oTemp.DoQuery("Select * from ""@Z_HR_OARE"" where U_Z_Obj='Personal Objectives'")
         If oTemp.RecordCount > 0 Then
         Else
             oUserTable = oApplication.Company.UserTables.Item("Z_HR_OARE")
             strCode = oApplication.Utilities.getMaxCode("@Z_HR_OARE", "Code")
             oUserTable.Code = strCode
             oUserTable.Name = strCode
-            oUserTable.UserFields.Fields.Item("U_Z_Obj").Value = "People Objective"
+            oUserTable.UserFields.Fields.Item("U_Z_Obj").Value = "Personal Objectives"
             oUserTable.UserFields.Fields.Item("U_Z_Weight").Value = 0
             If oUserTable.Add <> 0 Then
                 oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)

@@ -757,13 +757,14 @@ Public Class clshrTrainPlan
                 oForm = oApplication.SBO_Application.Forms.ActiveForm()
                 Dim strdocnum As String
                 Dim stXML As String = BusinessObjectInfo.ObjectKey
-                stXML = stXML.Replace("<?xml version=""1.0"" encoding=""UTF-16"" ?><Traing Agenda SetupParams><DocEntry>", "")
-                stXML = stXML.Replace("</DocEntry></Traing Agenda SetupParams>", "")
+                stXML = stXML.Replace("<?xml version=""1.0"" encoding=""UTF-16"" ?><Training Agenda SetupParams><DocEntry>", "")
+                stXML = stXML.Replace("</DocEntry></Training Agenda SetupParams>", "")
                 Dim otest, otest1 As SAPbobsCOM.Recordset
                 otest = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                 otest1 = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                 If stXML <> "" Then
-                    otest.DoQuery("select * from [@Z_HR_OTRIN]  where DocEntry=" & stXML)
+                    Dim strqry As String = "select * from [@Z_HR_OTRIN]  where DocEntry=" & stXML
+                    otest.DoQuery(strqry)
                     If otest.RecordCount > 0 Then
                         otest1.DoQuery("Update [@Z_HR_ONTREQ] set U_Z_CrAgenda='Y' where DocEntry='" & otest.Fields.Item("U_Z_NewTrainCode").Value & "'")
                     End If
