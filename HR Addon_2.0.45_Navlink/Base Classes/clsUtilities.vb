@@ -484,7 +484,7 @@ Public Class clsUtilities
         Dim oRec As SAPbobsCOM.Recordset
         oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
         If aChoice = "P" Then
-            strqry = "SELECT T0.U_Z_PosName,T0.U_Z_JobCode,T0.U_Z_JobName,T0.U_Z_DeptCode,T0.U_Z_DeptName,T1.U_Z_OrgCode,T1.U_Z_OrgDesc  FROM [@Z_HR_OPOSIN]  T0 Left Join [dbo].[@Z_HR_ORGST]  T1 on T0.U_Z_PosCode=T1.U_Z_PosCode where T0.U_Z_PosCode='" & PosId & "'"
+            strqry = "SELECT T0.U_Z_PosName,T0.U_Z_JobCode,T0.U_Z_JobName,T0.U_Z_DeptCode,T0.U_Z_DeptName,T1.U_Z_OrgCode,T1.U_Z_OrgDesc,T1.U_Z_UnitCode,T1.U_Z_UnitName  FROM [@Z_HR_OPOSIN]  T0 Left Join [dbo].[@Z_HR_ORGST]  T1 on T0.U_Z_PosCode=T1.U_Z_PosCode where T0.U_Z_PosCode='" & PosId & "'"
             oRec.DoQuery(strqry)
             If oRec.RecordCount > 0 Then
                 oCombobox = aForm.Items.Item("1000011").Specific
@@ -495,6 +495,8 @@ Public Class clsUtilities
                 oApplication.Utilities.setEdittextvalue(aForm, "52", oRec.Fields.Item("U_Z_JobName").Value)
                 oApplication.Utilities.setEdittextvalue(aForm, "54", oRec.Fields.Item("U_Z_OrgCode").Value)
                 oApplication.Utilities.setEdittextvalue(aForm, "56", oRec.Fields.Item("U_Z_OrgDesc").Value)
+                oApplication.Utilities.setEdittextvalue(aForm, "87", oRec.Fields.Item("U_Z_UnitCode").Value)
+                oApplication.Utilities.setEdittextvalue(aForm, "88", oRec.Fields.Item("U_Z_UnitName").Value)
             End If
         ElseIf aChoice = "C" Then
             strqry = "SELECT T0.U_Z_PosName,T0.U_Z_JobCode,T0.U_Z_JobName,T0.U_Z_DeptCode,T0.U_Z_DeptName,T0.U_Z_CompCode,T0.U_Z_CompName,T0.U_Z_DivCode,T0.U_Z_DivDesc,T1.U_Z_OrgCode,T1.U_Z_OrgDesc,"

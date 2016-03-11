@@ -4570,6 +4570,16 @@ Public NotInheritable Class clsTable
             AddFields("Z_PAY5", "Z_CreatedBy", "Created By", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
             AddFields("Z_PAY5", "Z_CreationDate", "Create Date", SAPbobsCOM.BoFieldTypes.db_Date)
 
+
+
+            AddFields("Z_HR_HEM4", "Z_UnitCode", "Unit Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 40)
+            AddFields("Z_HR_HEM4", "Z_UnitName", "Unit Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
+
+            AddFields("Z_HR_HEM4", "Z_FromLoc", "From Location", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
+            AddFields("Z_HR_HEM4", "Z_ToLoc", "To Location", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
+
+            AddFields("Z_HR_HEM2", "Z_UnitCode", "Unit Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 40)
+            AddFields("Z_HR_HEM2", "Z_UnitName", "Unit Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
             CreateUDO()
         Catch ex As Exception
             Throw ex

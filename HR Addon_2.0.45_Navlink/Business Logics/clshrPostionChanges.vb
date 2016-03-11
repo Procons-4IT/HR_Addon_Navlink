@@ -170,7 +170,7 @@ Public Class clshrPostionChanges
         Dim strqry As String
         oGrid = aForm.Items.Item("10").Specific
         oGrid.DataTable = oForm.DataSources.DataTables.Item("DT_0")
-        strqry = "	select ""U_Z_EmpId"",""U_Z_DeptName"",""U_Z_PosCode"",""U_Z_PosName"",""U_Z_JobCode"",""U_Z_JobName"",""U_Z_OrgCode"",""U_Z_OrgName"",""U_Z_SalCode"","
+        strqry = "	select ""U_Z_EmpId"",""U_Z_DeptName"",""U_Z_PosCode"",""U_Z_PosName"",""U_Z_JobCode"",""U_Z_JobName"",""U_Z_OrgCode"",""U_Z_OrgName"",""U_Z_SalCode"",""U_Z_UnitCode"" ""UnitCode"",""U_Z_UnitName"" ""Unit Name"",""U_Z_FromLoc"" ""From Location"",""U_Z_ToLoc"" ""To Location"","
         strqry = strqry & """U_Z_EffFromdt"",""U_Z_EffTodt"",case ""U_Z_AppStatus"" when 'P' then 'Pending' when 'A' then 'Approved' when 'R' then 'Rejected' end as ""U_Z_AppStatus"" from ""@Z_HR_HEM4"" where ""U_Z_EmpId""='" & strempid & "' "
         oGrid.DataTable.ExecuteQuery(strqry)
         oGrid.Columns.Item("U_Z_EmpId").TitleObject.Caption = "Employee Id"
@@ -296,6 +296,10 @@ Public Class clshrPostionChanges
             oUserTable.UserFields.Fields.Item("U_Z_OrgCode").Value = oApplication.Utilities.getEdittextvalue(oForm, "54")
             oUserTable.UserFields.Fields.Item("U_Z_OrgName").Value = oApplication.Utilities.getEdittextvalue(oForm, "56")
             oUserTable.UserFields.Fields.Item("U_Z_JoinDate").Value = oApplication.Utilities.getEdittextvalue(oForm, "63")
+            oUserTable.UserFields.Fields.Item("U_Z_UnitCode").Value = oApplication.Utilities.getEdittextvalue(oForm, "82")
+            oUserTable.UserFields.Fields.Item("U_Z_UnitName").Value = oApplication.Utilities.getEdittextvalue(oForm, "84")
+            oUserTable.UserFields.Fields.Item("U_Z_FromLoc").Value = oApplication.Utilities.getEdittextvalue(oForm, "109")
+            oUserTable.UserFields.Fields.Item("U_Z_ToLoc").Value = oApplication.Utilities.getEdittextvalue(oForm, "111")
              strdate = oApplication.Utilities.getEdittextvalue(oForm, "61")
             prodt = oApplication.Utilities.GetDateTimeValue(strdate)
             oUserTable.UserFields.Fields.Item("U_Z_NewPosDate").Value = prodt
@@ -491,6 +495,15 @@ Public Class clshrPostionChanges
             oTest.DoQuery(stSQL1)
             If oTest.RecordCount <= 0 Then
                 oApplication.Utilities.Message("position and Organization code is mismatch...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                Return False
+            End If
+            If oApplication.Utilities.getEdittextvalue(aForm, "109") <> "" And oApplication.Utilities.getEdittextvalue(aForm, "111") = "" Then
+                oApplication.Utilities.Message("To Location is missing....", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                Return False
+            End If
+
+            If oApplication.Utilities.getEdittextvalue(aForm, "111") <> "" And oApplication.Utilities.getEdittextvalue(aForm, "109") = "" Then
+                oApplication.Utilities.Message("From Location is missing....", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
                 Return False
             End If
             Return True

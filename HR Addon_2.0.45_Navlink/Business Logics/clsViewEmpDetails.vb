@@ -45,7 +45,7 @@ Public Class clsViewEmpDetails
         oGrid = aForm.Items.Item("3").Specific
         oGrid.DataTable = aForm.DataSources.DataTables.Item("DT_0")
         If strchoice = "Promotion" Then
-            strqry = "select U_Z_EmpId,U_Z_FirstName,U_Z_LastName,U_Z_DeptName,U_Z_JobName,U_Z_OrgName,U_Z_PosName,U_Z_SalCode,"
+            strqry = "select U_Z_EmpId,U_Z_FirstName,U_Z_LastName,U_Z_DeptName,U_Z_JobName,U_Z_OrgName,U_Z_PosName,U_Z_SalCode,U_Z_UnitCode,U_Z_UnitName,"
             strqry = strqry & " U_Z_JoinDate,U_Z_ProJoinDate  from [@Z_HR_HEM2]  where U_Z_EmpId=" & strEmpid & ""
             oGrid.DataTable.ExecuteQuery(strqry)
             oGrid.Columns.Item("U_Z_EmpId").TitleObject.Caption = "Employee Id"
@@ -60,6 +60,8 @@ Public Class clsViewEmpDetails
             oGrid.Columns.Item("U_Z_SalCode").TitleObject.Caption = "Salary Code"
             oGrid.Columns.Item("U_Z_ProJoinDate").TitleObject.Caption = "Effective To Date"
             oGrid.Columns.Item("U_Z_JoinDate").TitleObject.Caption = "Effective From Date"
+            oGrid.Columns.Item("U_Z_UnitCode").TitleObject.Caption = "Unit Code"
+            oGrid.Columns.Item("U_Z_UnitName").TitleObject.Caption = "Unit Name"
         ElseIf strchoice = "Transfer" Then
             strqry = "select U_Z_EmpId,U_Z_FirstName,U_Z_LastName,U_Z_DeptName,U_Z_JobName,U_Z_OrgName,U_Z_PosName,U_Z_SalCode,"
             strqry = strqry & " U_Z_JoinDate,U_Z_TraJoinDate  from [@Z_HR_HEM3]  where U_Z_EmpId=" & strEmpid & ""
@@ -77,7 +79,7 @@ Public Class clsViewEmpDetails
             oGrid.Columns.Item("U_Z_TraJoinDate").TitleObject.Caption = "Effective To Date"
             oGrid.Columns.Item("U_Z_JoinDate").TitleObject.Caption = "Effective From Date"
         Else
-            strqry = "select U_Z_EmpId,U_Z_FirstName,U_Z_LastName,U_Z_DeptName,U_Z_JobName,U_Z_OrgName,U_Z_PosName,U_Z_SalCode,"
+            strqry = "select U_Z_EmpId,U_Z_FirstName,U_Z_LastName,U_Z_DeptName,U_Z_JobName,U_Z_OrgName,U_Z_PosName,U_Z_SalCode,U_Z_UnitCode,U_Z_UnitName,U_Z_FromLoc,U_Z_ToLoc,"
             strqry = strqry & " U_Z_JoinDate,U_Z_NewPosDate  from [@Z_HR_HEM4]  where U_Z_EmpId=" & strEmpid & ""
             oGrid.DataTable.ExecuteQuery(strqry)
             oGrid.Columns.Item("U_Z_EmpId").TitleObject.Caption = "Employee Id"
@@ -92,6 +94,10 @@ Public Class clsViewEmpDetails
             oGrid.Columns.Item("U_Z_SalCode").TitleObject.Caption = "Salary Code"
             oGrid.Columns.Item("U_Z_NewPosDate").TitleObject.Caption = "Effective To Date"
             oGrid.Columns.Item("U_Z_JoinDate").TitleObject.Caption = "Effective From Date"
+            oGrid.Columns.Item("U_Z_UnitCode").TitleObject.Caption = "Unit Code"
+            oGrid.Columns.Item("U_Z_UnitName").TitleObject.Caption = "Unit Name"
+            oGrid.Columns.Item("U_Z_FromLoc").TitleObject.Caption = "From Location"
+            oGrid.Columns.Item("U_Z_ToLoc").TitleObject.Caption = "To Location"
         End If
     End Sub
 

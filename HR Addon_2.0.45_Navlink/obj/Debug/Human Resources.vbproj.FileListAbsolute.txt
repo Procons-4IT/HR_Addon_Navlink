@@ -493,3 +493,17 @@ E:\Projects\AddOn\HR AddOn\SourceCode\20160307_HR Addon_2.0.48_Navlink\obj\Debug
 E:\Projects\AddOn\HR AddOn\SourceCode\20160307_HR Addon_2.0.48_Navlink\obj\Debug\HumanResources.Resources.resources
 E:\Projects\AddOn\HR AddOn\SourceCode\20160307_HR Addon_2.0.48_Navlink\obj\Debug\Human Resources.vbproj.GenerateResource.Cache
 E:\Projects\AddOn\HR AddOn\SourceCode\20160307_HR Addon_2.0.48_Navlink\obj\Debug\Human Resources.exe
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Interop.SAPbobsCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Interop.SAPbouiCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Human Resources.vbproj.ResolveComReference.cache
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Human Resources.exe
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Human Resources.xml
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Human Resources.pdb
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\bin\Debug\Human Resources.exe
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\bin\Debug\Human Resources.pdb
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\bin\Debug\Human Resources.xml
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\bin\Debug\Interop.SAPbobsCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\bin\Debug\Interop.SAPbouiCOM.dll
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Human Resources.vbprojResolveAssemblyReference.cache
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\HumanResources.Resources.resources
+G:\International Projects_SAP9.0\Procons-4IT\Human Resource\HR Addon Phase II\64bit\Deliveries\20160311_HR64bit 2.0.51\20160311_HR Addon_2.0.51_Navlink\obj\Debug\Human Resources.vbproj.GenerateResource.Cache
