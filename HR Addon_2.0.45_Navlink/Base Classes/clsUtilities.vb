@@ -7168,10 +7168,10 @@ Public Class clsUtilities
                 If dblTransAmt > 0 Then
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
-                    ElseIf strDocCurrency = SystemCurrency Then
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
+                    ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf reimbused = "N" Then
                         Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf reimbused = "Y" Then
@@ -7181,14 +7181,14 @@ Public Class clsUtilities
                   
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
-                    ElseIf strDocCurrency = SystemCurrency Then
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
+                    ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
                     ElseIf reimbused = "N" Then
-                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
+                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
                     ElseIf reimbused = "Y" Then
-                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value)
+                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value) * -1
                     End If
                 End If
              
@@ -7225,10 +7225,10 @@ Public Class clsUtilities
                 If dblTransAmt > 0 Then
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
-                    ElseIf strDocCurrency = SystemCurrency Then
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
+                    ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf reimbused = "N" Then
                         Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf reimbused = "Y" Then
@@ -7237,14 +7237,14 @@ Public Class clsUtilities
                 Else
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
-                    ElseIf strDocCurrency = SystemCurrency Then
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
+                    ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
                     ElseIf reimbused = "N" Then
-                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
+                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
                     ElseIf reimbused = "Y" Then
-                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value)
+                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value) * -1
                     End If
                 End If
               

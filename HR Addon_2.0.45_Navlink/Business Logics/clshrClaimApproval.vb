@@ -72,7 +72,7 @@ Public Class clshrClaimApproval
             sQuery += " JOIN [@Z_HR_APPT2] T2 ON T4.DocEntry = T2.DocEntry "
             sQuery += " JOIN [@Z_HR_OAPPT] T3 ON T2.DocEntry = T3.DocEntry  "
             sQuery += " And (T1.U_Z_CurApprover = '" + oApplication.Company.UserName + "' OR T1.U_Z_NxtApprover = '" + oApplication.Company.UserName + "')"
-            sQuery += " where  T0.U_Z_DocStatus='O' And isnull(T2.U_Z_AMan,'N')='Y' AND isnull(T3.U_Z_Active,'N')='Y' and  isnull(T1.U_Z_AppRequired,'N')='Y' and  T2.U_Z_AUser = '" + oApplication.Company.UserName + "' And T3.U_Z_DocType = 'ExpCli'  Order by T0.Code Desc"
+            sQuery += " where isnull(T0.U_Z_DocStatus,'O')='O' And isnull(T2.U_Z_AMan,'N')='Y' AND isnull(T3.U_Z_Active,'N')='Y' and  isnull(T1.U_Z_AppRequired,'N')='Y' and  T2.U_Z_AUser = '" + oApplication.Company.UserName + "' And T3.U_Z_DocType = 'ExpCli'  Order by T0.Code Desc"
 
             oGrid.DataTable.ExecuteQuery(sQuery)
             LoadDocument(aForm)
@@ -107,7 +107,7 @@ Public Class clshrClaimApproval
             sQuery += " JOIN [@Z_HR_APPT2] T2 ON T4.DocEntry = T2.DocEntry "
             sQuery += " JOIN [@Z_HR_OAPPT] T3 ON T2.DocEntry = T3.DocEntry  "
             'sQuery += " And (T1.U_Z_CurApprover = '" + oApplication.Company.UserName + "' OR T1.U_Z_NxtApprover = '" + oApplication.Company.UserName + "')"
-            sQuery += " And isnull(T2.U_Z_AMan,'N')='Y' AND isnull(T3.U_Z_Active,'N')='Y' and  isnull(T1.U_Z_AppRequired,'N')='Y' and  T2.U_Z_AUser = '" + oApplication.Company.UserName + "' And T3.U_Z_DocType = 'ExpCli' Order by T0.Code Desc"
+            sQuery += " And isnull(T2.U_Z_AMan,'N')='Y' AND isnull(T3.U_Z_Active,'N')='Y' and  isnull(T1.U_Z_AppRequired,'N')='Y' and  T2.U_Z_AUser = '" + oApplication.Company.UserName + "' and isnull(T0.U_Z_DocStatus,'O')='C' And T3.U_Z_DocType = 'ExpCli' Order by T0.Code Desc"
             oGrid.DataTable.ExecuteQuery(sQuery)
             SummaryHeadDocument(aForm)
             oApplication.Utilities.assignMatrixLineno(oGrid, aForm)
@@ -493,9 +493,9 @@ Public Class clshrClaimApproval
                         sQuery = "Update [@Z_HR_OEXPCL] set U_Z_DocStatus='" & oCombobox.Selected.Value & "' where Code='" & strDocEntry & "'"
                         oRecordSet.DoQuery(sQuery)
                         ' SendMessage(HeaderCode, HeadDocEntry, strEmpName, oApplication.Company.UserName, MailDocEntry)
-                        Dim strEmailMessage As String = "Expense claim request has been approved for the request number :" & HeaderCode
-                        oApplication.Utilities.SendMail_RequestApproval(strEmailMessage, strEmpID, "", MailDocEntry, EmpName)
                         If MailDocEntry <> "" Then
+                            Dim strEmailMessage As String = "Expense claim request has been approved for the request number :" & HeaderCode
+                            oApplication.Utilities.SendMail_RequestApproval(strEmailMessage, strEmpID, "", MailDocEntry, EmpName)
                             oApplication.Utilities.CreateJournelVouchers(MailDocEntry)
                         End If
 
@@ -551,7 +551,7 @@ Public Class clshrClaimApproval
                         'End If
                         'oApplication.Company.StartTransaction()
                         Dim blnvalue As Boolean
-                        sQuery = "Update [@Z_HR_EXPCL] Set U_Z_Year=" & strYear & ",U_Z_Month=" & IntMonth & ", U_Z_AppStatus = 'A' Where Code = '" + strDocEntry + "'"
+                        sQuery = "Update [@Z_HR_EXPCL] Set U_Z_Year=" & strYear & ",U_Z_Month=" & IntMonth & ", U_Z_AppStatus = 'A',U_Z_RejRemark='" & Remarks & "' Where Code = '" + strDocEntry + "'"
                         oRecordSet.DoQuery(sQuery)
                         sQuery = "Select isnull(U_Z_Posting,'P') as U_Z_Posting,U_Z_Reimburse from [@Z_HR_EXPCL] where Code='" & strDocEntry & "'"
                         oTemp.DoQuery(sQuery)

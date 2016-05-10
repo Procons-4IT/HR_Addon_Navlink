@@ -115,7 +115,12 @@ Public Class clshrHiring
         Next
         oColum.ValidValues.Add("", "")
         For intRow As Integer = 0 To oSlpRS.RecordCount - 1
-            oColum.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Try
+                oColum.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+
             oSlpRS.MoveNext()
         Next
         oColum.DisplayDesc = True
@@ -139,10 +144,27 @@ Public Class clshrHiring
 
         For intRow As Integer = 0 To oSlpRS.RecordCount - 1
             ' oColum.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
-            oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
-            oCombobox1.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
-            oCombobox2.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
-            oCombobox3.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Try
+                oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+            Try
+                oCombobox1.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+            Try
+                oCombobox2.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+            Try
+                oCombobox3.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+
             oSlpRS.MoveNext()
         Next
         sform.Items.Item("1000017").DisplayDesc = True
@@ -164,8 +186,17 @@ Public Class clshrHiring
 
 
         For intRow As Integer = 0 To oSlpRS.RecordCount - 1
-            oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
-            oCombobox1.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Try
+                oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+            Try
+                oCombobox1.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+
             oSlpRS.MoveNext()
         Next
         sform.Items.Item("122").DisplayDesc = True
@@ -184,7 +215,12 @@ Public Class clshrHiring
         Next
         oCombobox.ValidValues.Add("", "")
         For intRow As Integer = 0 To oSlpRS.RecordCount - 1
-            oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Try
+                oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+
             oSlpRS.MoveNext()
         Next
         sform.Items.Item("122").DisplayDesc = True
@@ -200,7 +236,12 @@ Public Class clshrHiring
         Next
         oCombobox.ValidValues.Add("", "")
         For intRow As Integer = 0 To oSlpRS.RecordCount - 1
-            oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Try
+                oCombobox.ValidValues.Add(oSlpRS.Fields.Item(0).Value, oSlpRS.Fields.Item(1).Value)
+            Catch ex As Exception
+
+            End Try
+
             oSlpRS.MoveNext()
         Next
         sform.Items.Item("123").DisplayDesc = True

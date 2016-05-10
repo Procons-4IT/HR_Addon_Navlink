@@ -862,7 +862,7 @@ Public Class clshrExpClaimRequest
 #Region "Validation"
     Private Function Validation(ByVal sForm As SAPbouiCOM.Form) As Boolean
         Try
-            Dim strdate, Tracode, Exptype, Cur, Client, Project, Triptype, Tradesc As String
+            Dim strdate, Tracode, Exptype, Cur, Client, Project, Triptype, Tradesc, Attachment As String
             Dim currency As Double
             oGrid = sForm.Items.Item("12").Specific
             oCombobox = sForm.Items.Item("30").Specific
@@ -892,6 +892,7 @@ Public Class clshrExpClaimRequest
                     Exptype = oGrid.DataTable.GetValue("U_Z_ExpType", intRow) ' ocombo2.GetSelectedValue(intRow).Value
                     Client = oGrid.DataTable.GetValue("U_Z_Client", intRow)
                     Project = oGrid.DataTable.GetValue("U_Z_Project", intRow)
+                    Attachment = oGrid.DataTable.GetValue("U_Z_Attachment", intRow)
                     oComboColumn = oGrid.Columns.Item("U_Z_TripType")
                   
                    
@@ -917,6 +918,10 @@ Public Class clshrExpClaimRequest
                     ElseIf currency = 0.0 Then
                         oApplication.Utilities.Message("Transaction Amount is missing...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
                         oGrid.Columns.Item("U_Z_CurAmt").Click(intRow)
+                        Return False
+                    ElseIf Attachment = "" Then
+                        oApplication.Utilities.Message("Attachement is missing...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                        oGrid.Columns.Item("U_Z_Attachment").Click(intRow)
                         Return False
                     End If
                 Next
@@ -1120,7 +1125,9 @@ Public Class clshrExpClaimRequest
                             Case SAPbouiCOM.BoEventTypes.et_CLICK
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)
                                 oGrid = oForm.Items.Item("12").Specific
-                                Dim Status As String
+                                oCombobox1 = oForm.Items.Item("30").Specific
+                                Dim Status, TripType As String
+                                TripType = oCombobox1.Selected.Value
                                 If pVal.ItemUID = "12" And pVal.Row <> -1 Then
                                     For intRow As Integer = pVal.Row To pVal.Row
                                         If 1 = 1 Then
@@ -1130,6 +1137,12 @@ Public Class clshrExpClaimRequest
                                                     BubbleEvent = False
                                                     Exit Sub
                                                 End If
+                                            End If
+
+                                            If TripType = "" And pVal.ItemUID = "12" And (pVal.ColUID = "U_Z_Claimdt" Or pVal.ColUID = "U_Z_ExpType" Or pVal.ColUID = "U_Z_Attachment" Or pVal.ColUID = "U_Z_City" Or pVal.ColUID = "U_Z_Currency" Or pVal.ColUID = "U_Z_CurAmt" Or pVal.ColUID = "U_Z_ExcRate" Or pVal.ColUID = "U_Z_Reimburse" Or pVal.ColUID = "U_Z_Dimension" Or pVal.ColUID = "U_Z_PayMethod" Or pVal.ColUID = "U_Z_Notes") Then
+                                                oApplication.SBO_Application.SetStatusBarMessage("Select Triptype...", SAPbouiCOM.BoMessageTime.bmt_Medium, True)
+                                                BubbleEvent = False
+                                                Exit Sub
                                             End If
                                         End If
                                     Next
