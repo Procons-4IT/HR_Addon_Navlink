@@ -569,7 +569,30 @@ Public Class clsListener
                 Select Case pVal.FormType
                 End Select
             End If
+            If pVal.FormTypeEx = "651" Then
+                If pVal.ItemUID = "1" And pVal.EventType = SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED And pVal.Before_Action = True Then
+                    Dim OForm As SAPbouiCOM.Form
+                    OForm = oApplication.SBO_Application.Forms.Item(FormUID)
+                    If OForm.Mode = SAPbouiCOM.BoFormMode.fm_ADD_MODE Or OForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE Then
+                        Dim oCheck As SAPbouiCOM.CheckBox
+                        Dim oData As SAPbouiCOM.DBDataSource
+                        oData = OForm.DataSources.DBDataSources.Item("OCLG")
 
+                        ' oCheck = OForm.Items.Item("88").Specific
+                        If oData.GetValue("status", 0).Trim.ToString = "-3" Then ' oCheck.Checked = True Then
+                            Dim dtDate As Date = Now.Date
+                            Try
+                                OForm.Items.Item("125").Click(SAPbouiCOM.BoCellClickType.ct_Regular)
+                                oApplication.Utilities.setEdittextvalue(OForm, "125", dtDate.ToString("yyyyMMdd"))
+                            Catch ex As Exception
+
+                            End Try
+                            oApplication.SBO_Application.SendKeys("{TAB}")
+                        End If
+                    End If
+                End If
+
+            End If
             If pVal.EventType <> SAPbouiCOM.BoEventTypes.et_FORM_UNLOAD Then
                 Select Case pVal.FormTypeEx
                     Case frm_hr_ExpClaimPost
