@@ -1,3 +1,4 @@
+Imports System.IO
 Public Class clshrTrainNewApproval
     Inherits clsBase
     Private oCFLEvent As SAPbouiCOM.IChooseFromListEvent
@@ -43,6 +44,47 @@ Public Class clshrTrainNewApproval
         oForm.Items.Item("5").TextStyle = 7
         oForm.Freeze(False)
     End Sub
+    Private Sub LoadFiles(ByVal aform As SAPbouiCOM.Form, achoce As String)
+        oGrid = aform.Items.Item(achoce).Specific
+        For intRow As Integer = 0 To oGrid.DataTable.Rows.Count - 1
+            If oGrid.Rows.IsSelected(intRow) Then
+                Dim strFilename, strFilePath As String
+                strFilename = oGrid.DataTable.GetValue("U_Z_Attachment", intRow)
+                Dim Filename As String = Path.GetFileName(strFilename)
+                strFilePath = oGrid.DataTable.GetValue("U_Z_Attachment", intRow)
+
+                If File.Exists(strFilePath) = False Then
+                    Dim oRec As SAPbobsCOM.Recordset
+                    oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                    Dim strQry = "Select ""AttachPath"" From OADP"
+                    oRec.DoQuery(strQry)
+                    strFilePath = oRec.Fields.Item(0).Value
+
+                    If Filename = "" Then
+                        strFilePath = strFilePath
+                    Else
+                        strFilePath = strFilePath & Filename
+                    End If
+                    If File.Exists(strFilePath) = False Then
+                        oApplication.Utilities.Message("File does not exists ", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                        Exit Sub
+                    End If
+                    strFilename = strFilePath
+                Else
+                    strFilename = strFilePath
+                End If
+
+                Dim x As System.Diagnostics.ProcessStartInfo
+                x = New System.Diagnostics.ProcessStartInfo
+                x.UseShellExecute = True
+                x.FileName = strFilename
+                System.Diagnostics.Process.Start(x)
+                x = Nothing
+                Exit Sub
+            End If
+        Next
+        oApplication.Utilities.Message("No file has been selected...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+    End Sub
 #Region "Item Event"
     Public Overrides Sub ItemEvent(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean)
         Try
@@ -81,6 +123,15 @@ Public Class clshrTrainNewApproval
                         Select Case pVal.EventType
                             Case SAPbouiCOM.BoEventTypes.et_FORM_LOAD
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)
+                            Case SAPbouiCOM.BoEventTypes.et_MATRIX_LINK_PRESSED
+                                oForm = oApplication.SBO_Application.Forms.Item(FormUID)
+                                If (pVal.ItemUID = "1" Or pVal.ItemUID = "19") And pVal.ColUID = "U_Z_Attachment" Then
+                                    oGrid = oForm.Items.Item(pVal.ItemUID).Specific
+                                    oGrid.Columns.Item("RowsHeader").Click(pVal.Row)
+                                    LoadFiles(oForm, pVal.ItemUID)
+                                    BubbleEvent = False
+                                    Exit Sub
+                                End If
                             Case SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)
                                 If pVal.ItemUID = "12" Then

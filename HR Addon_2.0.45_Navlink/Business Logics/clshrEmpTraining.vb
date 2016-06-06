@@ -1,3 +1,4 @@
+Imports System.IO
 Public Class clshrEmpTraining
     Inherits clsBase
     Private oCFLEvent As SAPbouiCOM.IChooseFromListEvent
@@ -21,7 +22,7 @@ Public Class clshrEmpTraining
         MyBase.New()
         InvForConsumedItems = 0
     End Sub
-   
+
     Private Sub PopulateDetails(ByVal Empid As String)
         Try
             Dim Strqry As String
@@ -211,10 +212,10 @@ Public Class clshrEmpTraining
         oGrid = oForm.Items.Item("23").Specific
         oGrid.DataTable = oForm.DataSources.DataTables.Item("DT_2")
         strqry = " select DocEntry,U_Z_ReqDate,U_Z_HREmpID,U_Z_HREmpName,U_Z_DeptName,U_Z_PosiName,U_Z_CourseName,U_Z_CourseDetails,convert(varchar(10),U_Z_TrainFrdt,103) as U_Z_TrainFrdt,convert(varchar(10),U_Z_TrainTodt,103) as U_Z_TrainTodt,U_Z_TrainCost,U_Z_Notes,"
-        strqry += " case U_Z_AppStatus when 'P' then 'Pending' when 'A' then 'Approved' when 'R' then 'Rejected' end as U_Z_AppStatus,CASE U_Z_ReqStatus when 'P' then 'Pending' when 'MA' then 'Manager Approved' when 'MR' then 'Manager Rejected'"
+        strqry += " case U_Z_AppStatus when 'P' then 'Pending' when 'A' then 'Approved' when 'R' then 'Rejected' when 'C' then 'Canceled' end as U_Z_AppStatus,CASE U_Z_ReqStatus when 'P' then 'Pending' when 'MA' then 'Manager Approved' when 'MR' then 'Manager Rejected'"
         strqry = strqry & " when 'HA' then 'HR Approved' else 'HR Rejected' end as U_Z_ReqStatus,case U_Z_mgrstatus when 'P' then 'Pending' when 'MA' then 'Approved' else 'Rejected' end as U_Z_MgrStatus,"
         strqry = strqry & " U_Z_MgrRemarks,CASE U_Z_HRStatus when 'P' then 'Pending' when 'HA' then 'HR Approved' when 'HR' then 'HR Rejected'"
-        strqry = strqry & " end as U_Z_HRStatus,U_Z_HRRemarks  from [@Z_HR_ONTREQ] where U_Z_HREmpID='" & strempid & "'"
+        strqry = strqry & " end as U_Z_HRStatus,U_Z_HRRemarks,U_Z_Attachment  from [@Z_HR_ONTREQ] where U_Z_HREmpID='" & strempid & "'"
         oGrid.DataTable.ExecuteQuery(strqry)
         oGrid.Columns.Item("DocEntry").TitleObject.Caption = "Request Code"
         oEditTextColumn = oGrid.Columns.Item("DocEntry")
@@ -234,6 +235,10 @@ Public Class clshrEmpTraining
         oGrid.Columns.Item("U_Z_TrainTodt").TitleObject.Caption = "Training To Date"
         oGrid.Columns.Item("U_Z_TrainCost").TitleObject.Caption = "Training Course Cost"
         oGrid.Columns.Item("U_Z_Notes").TitleObject.Caption = "Comments"
+        oGrid.Columns.Item("U_Z_Attachment").TitleObject.Caption = "Attachments"
+        oEditTextColumn = oGrid.Columns.Item("U_Z_Attachment")
+        oEditTextColumn.LinkedObjectType = "Z_HR_OEXFOM"
+        oGrid.Columns.Item("U_Z_Attachment").Editable = False
         oGrid.Columns.Item("U_Z_AppStatus").TitleObject.Caption = "Approval Status"
         oGrid.Columns.Item("U_Z_ReqStatus").Visible = False
         oGrid.Columns.Item("U_Z_MgrStatus").Visible = False
@@ -545,6 +550,47 @@ Public Class clshrEmpTraining
     End Sub
 #End Region
 
+    Private Sub LoadFiles(ByVal aform As SAPbouiCOM.Form)
+        oGrid = aform.Items.Item("23").Specific
+        For intRow As Integer = 0 To oGrid.DataTable.Rows.Count - 1
+            If oGrid.Rows.IsSelected(intRow) Then
+                Dim strFilename, strFilePath As String
+                strFilename = oGrid.DataTable.GetValue("U_Z_Attachment", intRow)
+                Dim Filename As String = Path.GetFileName(strFilename)
+                strFilePath = oGrid.DataTable.GetValue("U_Z_Attachment", intRow)
+
+                If File.Exists(strFilePath) = False Then
+                    Dim oRec As SAPbobsCOM.Recordset
+                    oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                    Dim strQry = "Select ""AttachPath"" From OADP"
+                    oRec.DoQuery(strQry)
+                    strFilePath = oRec.Fields.Item(0).Value
+
+                    If Filename = "" Then
+                        strFilePath = strFilePath
+                    Else
+                        strFilePath = strFilePath & Filename
+                    End If
+                    If File.Exists(strFilePath) = False Then
+                        oApplication.Utilities.Message("File does not exists ", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                        Exit Sub
+                    End If
+                    strFilename = strFilePath
+                Else
+                    strFilename = strFilePath
+                End If
+
+                Dim x As System.Diagnostics.ProcessStartInfo
+                x = New System.Diagnostics.ProcessStartInfo
+                x.UseShellExecute = True
+                x.FileName = strFilename
+                System.Diagnostics.Process.Start(x)
+                x = Nothing
+                Exit Sub
+            End If
+        Next
+        oApplication.Utilities.Message("No file has been selected...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+    End Sub
 
 #Region "Item Event"
     Public Overrides Sub ItemEvent(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean)
@@ -589,6 +635,15 @@ Public Class clshrEmpTraining
                             Case SAPbouiCOM.BoEventTypes.et_FORM_RESIZE
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)
                                 reDrawForm(oForm)
+                            Case SAPbouiCOM.BoEventTypes.et_MATRIX_LINK_PRESSED
+                                oForm = oApplication.SBO_Application.Forms.Item(FormUID)
+                                If pVal.ItemUID = "23" And pVal.ColUID = "U_Z_Attachment" Then
+                                    oGrid = oForm.Items.Item("23").Specific
+                                    oGrid.Columns.Item("RowsHeader").Click(pVal.Row)
+                                    LoadFiles(oForm)
+                                    BubbleEvent = False
+                                    Exit Sub
+                                End If
 
                             Case SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)

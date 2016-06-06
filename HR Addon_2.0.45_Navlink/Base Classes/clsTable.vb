@@ -3165,7 +3165,7 @@ Public NotInheritable Class clsTable
             addField("@Z_HR_TRIN2", "Z_Status", "Applicant Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R", "Pending,Approved,Rejected", "P")
             AddFields("Z_HR_TRIN2", "Z_Date", "Training Date", SAPbobsCOM.BoFieldTypes.db_Date)
             AddFields("Z_HR_TRIN2", "Z_Hours", "Number of Hours", SAPbobsCOM.BoFieldTypes.db_Float, , , SAPbobsCOM.BoFldSubTypes.st_Rate)
-            addField("@Z_HR_TRIN2", "Z_AttendeesStatus", "Attendees Training Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "D,C,F", "Dropped,Completed,Failed", "C")
+            addField("@Z_HR_TRIN2", "Z_AttendeesStatus", "Attendees Training Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "D,C,F,R,L,W", "Dropped,Completed,Failed,Registered,Cancel,WithDraw", "R")
             AddFields("Z_HR_TRIN2", "Z_Remarks", "Remarks", SAPbobsCOM.BoFieldTypes.db_Alpha, , 250)
 
 
@@ -4301,7 +4301,7 @@ Public NotInheritable Class clsTable
 
             addField("@Z_HR_OTRAREQ", "Z_AppStatus", "Approval Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R", "Pending,Approved,Rejected", "P")
             addField("@Z_HR_TRIN1", "Z_AppStatus", "Approval Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R", "Pending,Approved,Rejected", "P")
-            addField("@Z_HR_ONTREQ", "Z_AppStatus", "Approval Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R", "Pending,Approved,Rejected", "P")
+            addField("@Z_HR_ONTREQ", "Z_AppStatus", "Approval Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R,C", "Pending,Approved,Rejected,Canceled", "P")
             addField("@Z_HR_ORMPREQ", "Z_AppStatus", "Approval Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R,C,L", "Pending,Approved,Rejected,Closed,Canceled", "P")
             addField("@Z_HR_OCRAPP", "Z_AppStatus", "Approval Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R", "Pending,Approved,Rejected", "P")
             addField("@Z_HR_OHEM1", "Z_AppStatus", "Approval Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "P,A,R", "Pending,Approved,Rejected", "P")
@@ -4580,6 +4580,39 @@ Public NotInheritable Class clsTable
 
             AddFields("Z_HR_HEM2", "Z_UnitCode", "Unit Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 40)
             AddFields("Z_HR_HEM2", "Z_UnitName", "Unit Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
+
+            AddFields("Z_HR_ONTREQ", "Z_FileName", "File Name", SAPbobsCOM.BoFieldTypes.db_Memo)
+            AddFields("Z_HR_ONTREQ", "Z_Attachment", "Attachments", SAPbobsCOM.BoFieldTypes.db_Memo)
+
+            'Navlink Family Member Masetr
+
+            AddTables("Z_PAY_OFAM", "Family Members Master", SAPbobsCOM.BoUTBTableType.bott_NoObject)
+            AddFields("Z_PAY_OFAM", "Z_Code", "Family Member Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 5)
+            AddFields("Z_PAY_OFAM", "Z_Name", "Family Member Description", SAPbobsCOM.BoFieldTypes.db_Alpha, , 100)
+
+
+
+            AddTables("Z_PAY_EMPFAMILY", "Family members Details", SAPbobsCOM.BoUTBTableType.bott_NoObject)
+            AddFields("Z_PAY_EMPFAMILY", "Z_EmpID", "Employee ID", SAPbobsCOM.BoFieldTypes.db_Alpha, , 10)
+            AddFields("Z_PAY_EMPFAMILY", "Z_MemCode", "Family Member Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 5)
+            AddFields("Z_PAY_EMPFAMILY", "Z_MemName", "Member Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 100)
+            AddFields("Z_PAY_EMPFAMILY", "Z_DOB", "Date of Birth", SAPbobsCOM.BoFieldTypes.db_Date)
+            AddFields("Z_PAY_EMPFAMILY", "Z_DOM", "Marriage Date", SAPbobsCOM.BoFieldTypes.db_Date)
+            addField("@Z_PAY_EMPFAMILY", "Z_STUD", "Is Student", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+            addField("@Z_PAY_EMPFAMILY", "Z_Emp", "Employement Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+            AddFields("Z_PAY_EMPFAMILY", "Z_DOJ", "Joing Date", SAPbobsCOM.BoFieldTypes.db_Date)
+            AddFields("Z_PAY_EMPFAMILY", "Z_DOT", "Resignation Date", SAPbobsCOM.BoFieldTypes.db_Date)
+            addField("@Z_PAY_EMPFAMILY", "Z_Married", "Married Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+            addField("@Z_PAY_EMPFAMILY", "Z_Gender", "Gender", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "B,G", "Boy,Girl", "B")
+            addField("@Z_PAY_EMPFAMILY", "Z_NSSF", "NSSF Declaration", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+            addField("@Z_PAY_EMPFAMILY", "Z_StopAllowance", "Stop Allowance", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+            'enhancements in Family Member details -Navlinke 11-03-2016
+            addField("@Z_PAY_EMPFAMILY", "Z_MRC", "Marriage Certificate Received", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+            addField("@Z_PAY_EMPFAMILY", "Z_BCR", "Birth Certificate Received", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+            addField("@Z_PAY_EMPFAMILY", "Z_INS", "Insurance", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "Y,N", "Yes,No", "N")
+
+
+
             CreateUDO()
         Catch ex As Exception
             Throw ex

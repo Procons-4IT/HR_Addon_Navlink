@@ -549,3 +549,45 @@ F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\2
 F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160512_HR Addon 2.0.53_Navlink\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.vbprojResolveAssemblyReference.cache
 F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160512_HR Addon 2.0.53_Navlink\HR Addon_2.0.53_Navlink\obj\Debug\HumanResources.Resources.resources
 F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160512_HR Addon 2.0.53_Navlink\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.vbproj.GenerateResource.Cache
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Interop.SAPbobsCOM.dll
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Interop.SAPbouiCOM.dll
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.vbproj.ResolveComReference.cache
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.exe
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.xml
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.pdb
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\bin\Debug\Human Resources.exe
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\bin\Debug\Human Resources.pdb
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\bin\Debug\Human Resources.xml
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\bin\Debug\Interop.SAPbobsCOM.dll
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\bin\Debug\Interop.SAPbouiCOM.dll
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.vbprojResolveAssemblyReference.cache
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\HumanResources.Resources.resources
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.53_Navlink\obj\Debug\Human Resources.vbproj.GenerateResource.Cache
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Interop.SAPbobsCOM.dll
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Interop.SAPbouiCOM.dll
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.vbproj.ResolveComReference.cache
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.exe
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.xml
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.pdb
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.vbprojResolveAssemblyReference.cache
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\HumanResources.Resources.resources
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.vbproj.GenerateResource.Cache
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Human Resources.exe
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Human Resources.pdb
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Human Resources.xml
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Interop.SAPbobsCOM.dll
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160603_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Interop.SAPbouiCOM.dll
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Interop.SAPbobsCOM.dll
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Interop.SAPbouiCOM.dll
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.vbproj.ResolveComReference.cache
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.exe
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.xml
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.pdb
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.vbprojResolveAssemblyReference.cache
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\HumanResources.Resources.resources
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\obj\Debug\Human Resources.vbproj.GenerateResource.Cache
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Human Resources.exe
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Human Resources.pdb
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Human Resources.xml
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Interop.SAPbobsCOM.dll
+F:\Internation Projects 2016\Procons4it\HumanResource\Addon\Deliveries\Navlink\20160606_HR Addon 2.0.54_Navlink\HR Addon_2.0.54_Navlink\bin\Debug\Interop.SAPbouiCOM.dll

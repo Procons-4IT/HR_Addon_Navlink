@@ -59,6 +59,16 @@ Public Module modVariables
         LveReq
         BankTime
     End Enum
+    Public Const frm_Activity As String = "651"
+
+    Public Const frm_LEB_FamilMembers1 As String = "frm_LEB_FamilMembers1"
+    Public Const frm_LEB_OFMD1 As String = "frm_LEB_OFMD1"
+    Public Const xml_FamilyMembers1 As String = "frm_LEB_FamilMembers1.xml"
+
+    Public Const xml_OFMD1 As String = "frm_LEB_OFMD1.xml"
+    Public Const mnu_FamilyMembers1 As String = "Z_FM1"
+    Public Const mnu_OFMD1 As String = "OFMD1"
+
     Public Const frm_HRDisRule As String = "frm_DisRuleHR"
     Public Const xml_HRDisRule As String = "frm_DisRuleHR.xml"
 

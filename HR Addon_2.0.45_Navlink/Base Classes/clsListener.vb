@@ -122,6 +122,10 @@ Public Class clsListener
         Try
             If pVal.BeforeAction = False Then
                 Select Case pVal.MenuUID
+
+                    Case mnu_FamilyMembers1
+                        oMenuObject = New clsfamilyMembers1
+                        oMenuObject.MenuEvent(pVal, BubbleEvent)
                     Case mnu_ExpClaimPost
                         oMenuObject = New clshrExpClaimPosting
                         oMenuObject.MenuEvent(pVal, BubbleEvent)
@@ -373,7 +377,7 @@ Public Class clsListener
                     Case mnu_hr_DeptMapp
                         oMenuObject = New clshrDeptMapping
                         oMenuObject.MenuEvent(pVal, BubbleEvent)
-                    Case mnu_hr_EmpMaster, "Training", "HRTRANSFER", "HRPROMOTION", "HRPOSITION", "HRNEWPROMOTION", "HRNEWTRANSFER", "HRNEWPOSITION", "HRASSAIGNTP"
+                    Case mnu_hr_EmpMaster, "btnFamily", "Training", "HRTRANSFER", "HRPROMOTION", "HRPOSITION", "HRNEWPROMOTION", "HRNEWTRANSFER", "HRNEWPOSITION", "HRASSAIGNTP"
                         oMenuObject = New clsHRModule
                         oMenuObject.MenuEvent(pVal, BubbleEvent)
                     Case mnu_hr_SelfAppr ', mnu_hr_MgrAppr, mnu_hr_HRAppr
@@ -595,6 +599,29 @@ Public Class clsListener
             End If
             If pVal.EventType <> SAPbouiCOM.BoEventTypes.et_FORM_UNLOAD Then
                 Select Case pVal.FormTypeEx
+
+                    Case frm_Activity
+                        If Not _Collection.ContainsKey(FormUID) Then
+                            oItemObject = New clsActivity
+                            oItemObject.FrmUID = FormUID
+                            _Collection.Add(FormUID, oItemObject)
+                        End If
+
+                    Case frm_LEB_OFMD1
+                        If Not _Collection.ContainsKey(FormUID) Then
+                            oItemObject = New clsFamilyDetails1
+                            oItemObject.FrmUID = FormUID
+                            _Collection.Add(FormUID, oItemObject)
+                        End If
+
+
+                    Case frm_LEB_FamilMembers1
+                        If Not _Collection.ContainsKey(FormUID) Then
+                            oItemObject = New clsfamilyMembers1
+                            oItemObject.FrmUID = FormUID
+                            _Collection.Add(FormUID, oItemObject)
+                        End If
+
                     Case frm_hr_ExpClaimPost
                         If Not _Collection.ContainsKey(FormUID) Then
                             oItemObject = New clshrExpClaimPosting

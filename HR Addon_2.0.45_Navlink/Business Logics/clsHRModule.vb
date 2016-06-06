@@ -1325,6 +1325,17 @@ Public Class clsHRModule
                 Case "NAVIGATION"
                     Dim aCode As String
                     aCode = oApplication.Utilities.getEdittextvalue(aForm, "33")
+
+                    Dim ORe As SAPbobsCOM.Recordset
+                    ORe = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                    ORe.DoQuery("Select * from [@Z_PAY_EMPFAMILY] where U_Z_EmpID='" & oApplication.Utilities.getEdittextvalue(aForm, "33") & "' and U_Z_MemCode Like 'CH%'")
+                    Dim intChile As Integer = 0
+                    If ORe.RecordCount > 0 Then
+                        intChile = ORe.RecordCount
+                    End If
+                    ORe.DoQuery("Update OHEM set nChildren=" & intChile & " where empid=" & oApplication.Utilities.getEdittextvalue(aForm, "33"))
+
+
                     oGrid = aForm.Items.Item("HRgrdpeo").Specific
                     oGrid.DataTable = aForm.DataSources.DataTables.Item("HRdtPeople")
                     oGrid.DataTable.ExecuteQuery("Select * from ""@Z_HR_PEOBJ1"" where ""U_Z_HREmpID""='" & aCode & "'")
@@ -2456,6 +2467,13 @@ Public Class clsHRModule
                     '    Dim objct As New clshrEmpTraining
                     '    oCombobox = oForm.Items.Item("45").Specific
                     '    objct.LoadForm(empid, empname, poscode, posName, oCombobox.Selected.Value, oCombobox.Selected.Description)
+                Case "btnFamily"
+                    '  oForm = oApplication.SBO_Application.Forms.ActiveForm()
+                    If 1 = 1 Then
+                        Dim oB As New clsFamilyDetails1
+                        oForm = oApplication.SBO_Application.Forms.ActiveForm()
+                        oB.LoadForm(oApplication.Utilities.getEdittextvalue(oForm, "33"))
+                    End If
                 Case "HRTRANSFER"
                     Dim oObj As New clsViewEmpDetails
                     oForm = oApplication.SBO_Application.Forms.ActiveForm()
@@ -2513,7 +2531,6 @@ Public Class clsHRModule
                 oForm = oApplication.SBO_Application.Forms.Item(BusinessObjectInfo.FormUID)
                 If oForm.TypeEx = frm_hr_EmpMaster And BusinessObjectInfo.BeforeAction = False And BusinessObjectInfo.ActionSuccess = True Then
                     LoadGridValues(oForm, "NAVIGATION")
-
                 End If
             ElseIf BusinessObjectInfo.BeforeAction = False And BusinessObjectInfo.ActionSuccess = True And (BusinessObjectInfo.EventType = SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD Or BusinessObjectInfo.EventType = SAPbouiCOM.BoEventTypes.et_FORM_DATA_UPDATE) Then
                 Dim oobj As SAPbobsCOM.EmployeesInfo
@@ -2541,14 +2558,16 @@ Public Class clsHRModule
                 Try
                     If oForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE Then
                         Dim oCreationPackage As SAPbouiCOM.MenuCreationParams
-                        'oCreationPackage = oApplication.SBO_Application.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_MenuCreationParams)
-                        'oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING
-                        'oCreationPackage.UniqueID = "HRTRANSFER"
-                        'oCreationPackage.String = "View Transfer Details"
-                        'oCreationPackage.Enabled = True
-                        'oMenuItem = oApplication.SBO_Application.Menus.Item("1280") 'Data'
-                        'oMenus = oMenuItem.SubMenus
-                        'oMenus.AddEx(oCreationPackage)
+
+                        oCreationPackage = oApplication.SBO_Application.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_MenuCreationParams)
+                        oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING
+                        oCreationPackage.UniqueID = "btnFamily"
+                        oCreationPackage.String = "Family Details"
+                        oCreationPackage.Enabled = True
+                        oMenuItem = oApplication.SBO_Application.Menus.Item("1280") 'Data'
+                        oMenus = oMenuItem.SubMenus
+                        oMenus.AddEx(oCreationPackage)
+
 
                         oCreationPackage = oApplication.SBO_Application.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_MenuCreationParams)
                         oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING
@@ -2621,7 +2640,7 @@ Public Class clsHRModule
                 Dim oMenus As SAPbouiCOM.Menus
                 Try
                     If oForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE Then
-                        'oApplication.SBO_Application.Menus.RemoveEx("Training")
+                        oApplication.SBO_Application.Menus.RemoveEx("btnFamily")
                         'oApplication.SBO_Application.Menus.RemoveEx("HRTRANSFER")
                         oApplication.SBO_Application.Menus.RemoveEx("HRPROMOTION")
                         oApplication.SBO_Application.Menus.RemoveEx("HRPOSITION")

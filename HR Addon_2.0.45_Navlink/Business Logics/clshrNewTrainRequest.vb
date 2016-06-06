@@ -1,3 +1,4 @@
+Imports System.IO
 Public Class clshrNewTrainRequest
     Inherits clsBase
     Private oCFLEvent As SAPbouiCOM.IChooseFromListEvent
@@ -17,6 +18,7 @@ Public Class clshrNewTrainRequest
     Private InvBaseDocNo As String
     Private InvForConsumedItems As Integer
     Private blnFlag As Boolean = False
+    Private sPath, strSelectedFilepath, strSelectedFolderPath As String
     Public Sub New()
         MyBase.New()
         InvForConsumedItems = 0
@@ -43,13 +45,15 @@ Public Class clshrNewTrainRequest
         oOption1.Selected = True
         AddMode(oForm)
         'oForm.Mode = SAPbouiCOM.BoFormMode.fm_ADD_MODE
+        oForm.Items.Item("58").Enabled = False
+        oForm.Items.Item("60").Enabled = False
         oForm.Freeze(False)
     End Sub
     Public Sub LoadForm1(ByVal RequestCode As String, ByVal strStatus As String, Optional ByVal strChoice As String = "")
         oForm = oApplication.Utilities.LoadForm(xml_hr_NewTrainReq, frm_hr_NewTrainReq)
         oForm = oApplication.SBO_Application.Forms.ActiveForm()
         oForm.Freeze(True)
-        
+
         FillDepartment(oForm)
         oOption = oForm.Items.Item("42").Specific
         oOption.GroupWith("43")
@@ -67,13 +71,22 @@ Public Class clshrNewTrainRequest
             oForm.Items.Item("1").Visible = False
             oForm.Mode = SAPbouiCOM.BoFormMode.fm_VIEW_MODE
         Else
+            oForm.Items.Item("60").Enabled = False
             oForm.Items.Item("1").Visible = True
         End If
         If strChoice = "A" Then
             oForm.Items.Item("1").Visible = False
             oForm.Mode = SAPbouiCOM.BoFormMode.fm_VIEW_MODE
         Else
+            oForm.Items.Item("60").Enabled = False
             oForm.Items.Item("1").Visible = True
+        End If
+        Dim strDate As Date = oApplication.Utilities.getEdittextvalue(oForm, "30")
+
+        If strStatus = "Approved" And strDate > Now.Date Then
+            oForm.Items.Item("60").Enabled = True
+        Else
+            oForm.Items.Item("60").Enabled = False
         End If
         oForm.Freeze(False)
     End Sub
@@ -202,6 +215,54 @@ Public Class clshrNewTrainRequest
         End Try
         Return False
     End Function
+    Private Sub fillopen()
+        Dim mythr As New System.Threading.Thread(AddressOf ShowFileDialog)
+        mythr.SetApartmentState(Threading.ApartmentState.STA)
+        mythr.Start()
+        mythr.Join()
+
+    End Sub
+
+    Private Sub ShowFileDialog()
+        Dim oDialogBox As New OpenFileDialog
+        Dim strFileName, strMdbFilePath As String
+        Dim oProcesses() As Process
+        Try
+            oProcesses = Process.GetProcessesByName("SAP Business One")
+            If oProcesses.Length <> 0 Then
+                For i As Integer = 0 To oProcesses.Length - 1
+                    Dim MyWindow As New clsListener.WindowWrapper(oProcesses(i).MainWindowHandle)
+                    If oDialogBox.ShowDialog(MyWindow) = DialogResult.OK Then
+                        strMdbFilePath = oDialogBox.FileName
+                        strSelectedFilepath = oDialogBox.FileName
+                        strFileName = strSelectedFilepath
+                        strSelectedFolderPath = strFileName
+                    Else
+                    End If
+                Next
+            End If
+        Catch ex As Exception
+            oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+        Finally
+        End Try
+    End Sub
+    Private Sub LoadFiles(ByVal aform As SAPbouiCOM.Form)
+        oMatrix = aform.Items.Item("62").Specific
+        For intRow As Integer = 1 To oMatrix.RowCount
+            If oMatrix.IsRowSelected(intRow) Then
+                Dim strFilename As String
+                strFilename = oMatrix.Columns.Item("V_0").Cells.Item(intRow).Specific.value
+                Dim x As System.Diagnostics.ProcessStartInfo
+                x = New System.Diagnostics.ProcessStartInfo
+                x.UseShellExecute = True
+                x.FileName = strFilename
+                System.Diagnostics.Process.Start(x)
+                x = Nothing
+                Exit Sub
+            End If
+        Next
+        oApplication.Utilities.Message("No file has been selected...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+    End Sub
 
 #Region "Item Event"
     Public Overrides Sub ItemEvent(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean)
@@ -225,6 +286,12 @@ Public Class clshrNewTrainRequest
                                         ' oForm.Close()
                                     End If
                                 End If
+                                If pVal.ItemUID = "60" Then
+                                    If oApplication.SBO_Application.MessageBox("Do you want Cancel the New Training Request", , "Yes", "No") = 2 Then
+                                        BubbleEvent = False
+                                        Exit Sub
+                                    End If
+                                End If
                         End Select
 
                     Case False
@@ -240,6 +307,31 @@ Public Class clshrNewTrainRequest
                                     Case "1"
                                         If oForm.Mode = SAPbouiCOM.BoFormMode.fm_ADD_MODE Or oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE Then
                                             oForm.Close()
+                                        End If
+                                    Case "60"
+                                        Dim oRec As SAPbobsCOM.Recordset
+                                        oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                                        oRec.DoQuery("Update [@Z_HR_ONTREQ] set U_Z_AppStatus='C' where DocEntry='" & oApplication.Utilities.getEdittextvalue(oForm, "4") & "'")
+                                        oForm.Close()
+                                    Case "62"
+                                        If oForm.Mode <> SAPbouiCOM.BoFormMode.fm_OK_MODE And oForm.Mode <> SAPbouiCOM.BoFormMode.fm_ADD_MODE And oForm.Mode <> SAPbouiCOM.BoFormMode.fm_UPDATE_MODE Then
+                                            Exit Sub
+                                        End If
+                                        fillopen()
+                                        If strSelectedFilepath <> "" Then
+                                            Try
+                                                oForm.Freeze(True)
+                                                oApplication.Utilities.setEdittextvalue(oForm, "63", strSelectedFilepath)
+                                                Dim strPath As String = Path.GetFileName(strSelectedFilepath)
+                                                oApplication.Utilities.setEdittextvalue(oForm, "64", strPath)
+                                                If oForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE Then
+                                                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE
+                                                End If
+                                                oForm.Freeze(False)
+                                            Catch ex As Exception
+                                                oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                                                oForm.Freeze(False)
+                                            End Try
                                         End If
                                 End Select
 
@@ -278,8 +370,9 @@ Public Class clshrNewTrainRequest
                 Dim stXML As String = BusinessObjectInfo.ObjectKey
                 stXML = stXML.Replace("<?xml version=""1.0"" encoding=""UTF-16"" ?><New Training RequestParams><DocEntry>", "")
                 stXML = stXML.Replace("</DocEntry></New Training RequestParams>", "")
-                Dim otest As SAPbobsCOM.Recordset
+                Dim otest, oRec As SAPbobsCOM.Recordset
                 otest = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                 If stXML <> "" Then
 
                     otest.DoQuery("select * from [@Z_HR_ONTREQ]  where DocEntry=" & stXML)
@@ -293,6 +386,12 @@ Public Class clshrNewTrainRequest
                         End If
                     End If
 
+                    oRec.DoQuery("select AttachPath from OADP")
+                    If oRec.RecordCount > 0 Then
+                        Dim strfileName As String = otest.Fields.Item("U_Z_Attachment").Value
+                        Dim filename As String = Path.GetFileName(strfileName)
+                        File.Copy(strfileName, oRec.Fields.Item("AttachPath").Value + filename)
+                    End If
                 End If
 
             End If

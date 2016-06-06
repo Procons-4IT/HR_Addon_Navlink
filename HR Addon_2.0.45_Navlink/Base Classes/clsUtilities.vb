@@ -3581,6 +3581,22 @@ Public Class clsUtilities
                             SendMailforUsers(mailServer, mailPort, mailId, mailPwd, mailSSL, toID, ccID, mType, path, dtAppraisal.GetValue("DocEntry", index), dtAppraisal.GetValue("Name", index), Period)
                         End If
                     Next
+                ElseIf (strType = "Activity") Then
+                    For index As Integer = 0 To dtAppraisal.Rows.Count - 1
+                        toID = dtAppraisal.GetValue("toID", index)
+                        ccID = dtAppraisal.GetValue("ccID", index)
+                        mType = dtAppraisal.GetValue("Type", index)
+                        path = dtAppraisal.GetValue("Path", index)
+                        If toID.Length > 0 And ccID.Length = 0 Then
+                            ccID = toID
+                            SendMailforUsers(mailServer, mailPort, mailId, mailPwd, mailSSL, toID, ccID, mType, path, dtAppraisal.GetValue("DocEntry", index), dtAppraisal.GetValue("Name", index), Period)
+                        ElseIf toID.Length = 0 And ccID.Length > 0 Then
+                            toID = ccID
+                            SendMailforUsers(mailServer, mailPort, mailId, mailPwd, mailSSL, toID, ccID, mType, path, dtAppraisal.GetValue("DocEntry", index), dtAppraisal.GetValue("Name", index), Period)
+                        Else
+                            SendMailforUsers(mailServer, mailPort, mailId, mailPwd, mailSSL, toID, ccID, mType, path, dtAppraisal.GetValue("DocEntry", index), dtAppraisal.GetValue("Name", index), Period)
+                        End If
+                    Next
                 ElseIf (strType = "Agenda") Then
                     For index As Integer = 0 To dtAppraisal.Rows.Count - 1
                         toID = dtAppraisal.GetValue("toID", index)
@@ -3634,9 +3650,27 @@ Public Class clsUtilities
                     End If
                     oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"" from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocEntry & "'")
                     Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
-
                     strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & ""
                     mail.Subject = "Appraisal Process Initialized"
+                    mail.Body = BuildHtmBody(DocEntry, Name, "Appraisal", mType, strMessage)
+                    ' mail.Attachments.Add(New Net.Mail.Attachment(path))
+                    SendMessageAppraisal("Appraisal Process Initialized", strMessage, oTemp.Fields.Item(2).Value)
+                End If
+            ElseIf mType = "AC" Then 'Activity
+                strQuery = "SELECT T1.email,isnull(T1.firstName,'') +' '+ isnull(T1.lastName,'') as 'EmpName',T1.userId from [@Z_HR_OSEAPP] T0 JOIN OHEM T1 ON T0.U_Z_EmpId=T1.empID where T0.DocEntry='" & DocEntry & "'"
+                oTemp.DoQuery(strQuery)
+                If oTemp.RecordCount > 0 Then
+                    'mail.To.Add(oTemp.Fields.Item(0).Value)
+                    oTest.DoQuery("Select * from [@Z_HR_OWEB]")
+                    Dim strESSLink As String = ""
+                    If oTest.RecordCount > 0 Then
+                        strESSLink = oTest.Fields.Item("U_Z_WebPath").Value
+                    End If
+                    oRecordSet.DoQuery("Select T0.""U_Z_PerFrom"" ,T0.""U_Z_PerTo"" from ""@Z_HR_PERAPP"" T0 JOIN [@Z_HR_OSEAPP] T1 on T1.U_Z_Period=T0.U_Z_PerCode where T1.DocEntry='" & DocEntry & "'")
+                    Dim strPeriod As String = "Period From: " & oRecordSet.Fields.Item("U_Z_PerFrom").Value & "," & "Period To: " & oRecordSet.Fields.Item("U_Z_PerTo").Value
+
+                    strMessage = "Appraisal Document No : " & DocEntry & ", Employee Name : " & oTemp.Fields.Item("EmpName").Value & "," & strPeriod & ""
+                    mail.Subject = "Document From HR"
                     mail.Body = BuildHtmBody(DocEntry, Name, "Appraisal", mType, strMessage)
                     ' mail.Attachments.Add(New Net.Mail.Attachment(path))
                     SendMessageAppraisal("Appraisal Process Initialized", strMessage, oTemp.Fields.Item(2).Value)
@@ -3844,7 +3878,7 @@ Public Class clsUtilities
             Dim strMesage As String
             strESSLink = strESSLink
             strMesage = "<!DOCTYPE html><html><head><title></title></head><body>  <a>" & Message & "<a> <br> <a href=" & strESSLink & " >Please login to ESS</a></body></html>"
-            mail.Subject = Message
+            mail.Subject = strMesage
             If SerialNo <> "" Then
                 mail.Body = BuildHtmBody(SerialNo, aUser, "ExpClaim", mType, strMesage, aEmpId)
             Else
@@ -4434,7 +4468,7 @@ Public Class clsUtilities
                             sQuery += " JOIN [@Z_HR_OAPPT] T3 ON T2.DocEntry = T3.DocEntry  "
                             sQuery += " And isnull(T2.U_Z_AMan,'N')='Y' AND isnull(T3.U_Z_Active,'N')='Y' and  T2.U_Z_AUser = '" + oApplication.Company.UserName + "' And T3.U_Z_DocType = '" + HeaderDoctype.Train.ToString() + "' Order by Convert(Numeric,T0.Code) desc "
                         Case HistoryDoctype.NewTra
-                            sQuery = "select T0.DocEntry,U_Z_ReqDate,T0.U_Z_HREmpID,U_Z_HREmpName,U_Z_CourseName,U_Z_CourseDetails,convert(varchar(10),U_Z_TrainFrdt,103) as U_Z_TrainFrdt,convert(varchar(10),U_Z_TrainTodt,103) as U_Z_TrainTodt,U_Z_TrainCost,U_Z_Notes,"
+                            sQuery = "select T0.DocEntry,U_Z_ReqDate,T0.U_Z_HREmpID,U_Z_HREmpName,U_Z_CourseName,U_Z_CourseDetails,convert(varchar(10),U_Z_TrainFrdt,103) as U_Z_TrainFrdt,convert(varchar(10),U_Z_TrainTodt,103) as U_Z_TrainTodt,U_Z_TrainCost,U_Z_Notes,U_Z_Attachment,"
                             sQuery += " Case U_Z_AppRequired when 'Y' then 'Yes' else 'No' End as  'Approval Required',U_Z_AppReqDate 'Requested Date',CONVERT(VARCHAR(8),U_Z_ReqTime,108) AS 'Requested Time'"
                             sQuery += " ,U_Z_AppStatus from [@Z_HR_ONTREQ] T0 JOIN [@Z_HR_APPT1] T1 ON T0.U_Z_HREmpID = T1.U_Z_OUser "
                             sQuery += " JOIN [@Z_HR_APPT2] T2 ON T1.DocEntry = T2.DocEntry "
@@ -4755,12 +4789,16 @@ Public Class clsUtilities
                             oGrid.Columns.Item("U_Z_TrainTodt").TitleObject.Caption = "Training To Date"
                             oGrid.Columns.Item("U_Z_TrainCost").TitleObject.Caption = "Training Course Cost"
                             oGrid.Columns.Item("U_Z_Notes").TitleObject.Caption = "Comments"
+                            oGrid.Columns.Item("U_Z_Attachment").TitleObject.Caption = "Attachments"
+                            oEditTextColumn = oGrid.Columns.Item("U_Z_Attachment")
+                            oEditTextColumn.LinkedObjectType = "Z_HR_OEXFOM"
                             oGrid.Columns.Item("U_Z_AppStatus").TitleObject.Caption = "Approval Status"
                             oGrid.Columns.Item("U_Z_AppStatus").Type = SAPbouiCOM.BoGridColumnType.gct_ComboBox
                             oGridCombo = oGrid.Columns.Item("U_Z_AppStatus")
                             oGridCombo.ValidValues.Add("P", "Pending")
                             oGridCombo.ValidValues.Add("A", "Approved")
                             oGridCombo.ValidValues.Add("R", "Rejected")
+                            oGridCombo.ValidValues.Add("C", "Canceled")
                             oGridCombo.DisplayType = SAPbouiCOM.BoComboDisplayType.cdt_Description
                             oGrid.SelectionMode = SAPbouiCOM.BoMatrixSelect.ms_Single
                             oGrid.AutoResizeColumns()
@@ -4992,7 +5030,7 @@ Public Class clsUtilities
                             sQuery += " And (T0.U_Z_CurApprover = '" + oApplication.Company.UserName + "' OR T0.U_Z_NxtApprover = '" + oApplication.Company.UserName + "')"
                             sQuery += " And isnull(T2.U_Z_AMan,'N')='Y' AND isnull(T3.U_Z_Active,'N')='Y' and  isnull(T0.U_Z_AppRequired,'N')='Y' and  T2.U_Z_AUser = '" + oApplication.Company.UserName + "' And T3.U_Z_DocType = '" + HeaderDoctype.Train.ToString() + "' Order by Convert(Numeric,T0.Code) desc "
                         Case HistoryDoctype.NewTra
-                            sQuery = "select T0.DocEntry,U_Z_ReqDate,T0.U_Z_HREmpID,U_Z_HREmpName,U_Z_CourseName,U_Z_CourseDetails,convert(varchar(10),U_Z_TrainFrdt,103) as U_Z_TrainFrdt,convert(varchar(10),U_Z_TrainTodt,103) as U_Z_TrainTodt,U_Z_TrainCost,U_Z_Notes,"
+                            sQuery = "select T0.DocEntry,U_Z_ReqDate,T0.U_Z_HREmpID,U_Z_HREmpName,U_Z_CourseName,U_Z_CourseDetails,convert(varchar(10),U_Z_TrainFrdt,103) as U_Z_TrainFrdt,convert(varchar(10),U_Z_TrainTodt,103) as U_Z_TrainTodt,U_Z_TrainCost,U_Z_Notes,U_Z_Attachment,"
                             sQuery += " Case U_Z_AppRequired when 'Y' then 'Yes' else 'No' End as  'Approval Required',U_Z_AppReqDate 'Requested Date',CONVERT(VARCHAR(8),U_Z_ReqTime,108) AS 'Requested Time',"
                             sQuery += " U_Z_AppStatus, U_Z_CurApprover 'Current Approver',U_Z_NxtApprover 'Next Approver' from [@Z_HR_ONTREQ] T0 JOIN [@Z_HR_APPT1] T1 ON T0.U_Z_HREmpID = T1.U_Z_OUser and (T0.""U_Z_AppStatus""='P' or T0.""U_Z_AppStatus""='-') "
                             sQuery += " JOIN [@Z_HR_APPT2] T2 ON T1.DocEntry = T2.DocEntry "
@@ -5334,12 +5372,16 @@ Public Class clsUtilities
                             oGrid.Columns.Item("U_Z_TrainTodt").TitleObject.Caption = "Training To Date"
                             oGrid.Columns.Item("U_Z_TrainCost").TitleObject.Caption = "Training Course Cost"
                             oGrid.Columns.Item("U_Z_Notes").TitleObject.Caption = "Comments"
+                            oGrid.Columns.Item("U_Z_Attachment").TitleObject.Caption = "Attachments"
+                            oEditTextColumn = oGrid.Columns.Item("U_Z_Attachment")
+                            oEditTextColumn.LinkedObjectType = "Z_HR_OEXFOM"
                             oGrid.Columns.Item("U_Z_AppStatus").TitleObject.Caption = "Approval Status"
                             oGrid.Columns.Item("U_Z_AppStatus").Type = SAPbouiCOM.BoGridColumnType.gct_ComboBox
                             oGridCombo = oGrid.Columns.Item("U_Z_AppStatus")
                             oGridCombo.ValidValues.Add("P", "Pending")
                             oGridCombo.ValidValues.Add("A", "Approved")
                             oGridCombo.ValidValues.Add("R", "Rejected")
+                            oGridCombo.ValidValues.Add("C", "Canceled")
                             oGridCombo.DisplayType = SAPbouiCOM.BoComboDisplayType.cdt_Description
                             oGrid.SelectionMode = SAPbouiCOM.BoMatrixSelect.ms_Single
                             oGrid.AutoResizeColumns()
@@ -7159,16 +7201,18 @@ Public Class clsUtilities
                     Vjov.JournalEntries.Lines.Add()
                     Vjov.JournalEntries.Lines.SetCurrentLine(LineNo)
                 End If
-                Vjov.JournalEntries.Reference = oTemp.Fields.Item("U_Z_EmpID").Value
+                Vjov.JournalEntries.Reference = aCode ' oTemp.Fields.Item("U_Z_EmpID").Value
                 Vjov.JournalEntries.Reference2 = getEmpName(oTemp.Fields.Item("U_Z_EmpID").Value)
                 strDimentions = oTemp.Fields.Item("U_Z_Dimension").Value
                 strDim = strDimentions.Split(";")
                 strdebitCode = getSAPAccount(oTemp.Fields.Item("U_Z_DebitCode").Value)
                 Vjov.JournalEntries.Lines.AccountCode = strdebitCode
+                Vjov.JournalEntries.Lines.LineMemo = oTemp.Fields.Item("U_Z_RejRemark").Value
                 If dblTransAmt > 0 Then
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
+                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
                         Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
@@ -7178,10 +7222,10 @@ Public Class clsUtilities
                         Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value)
                     End If
                 Else
-                  
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
                     ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
                         Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
@@ -7191,7 +7235,7 @@ Public Class clsUtilities
                         Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value) * -1
                     End If
                 End If
-             
+
 
                 Try
                     If strDim(0) <> "" Then
@@ -7222,10 +7266,12 @@ Public Class clsUtilities
                     Dim BussCode As String = oRecSet.Fields.Item("U_Z_CardCode").Value.ToString()
                     Vjov.JournalEntries.Lines.ShortName = BussCode
                 End If
+                Vjov.JournalEntries.Lines.LineMemo = oTemp.Fields.Item("U_Z_RejRemark").Value
                 If dblTransAmt > 0 Then
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
+                        Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value)
+                        Vjov.JournalEntries.Lines.Credit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
                     ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
                         Vjov.JournalEntries.Lines.FCCredit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value)
@@ -7237,7 +7283,8 @@ Public Class clsUtilities
                 Else
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
-                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_CurAmt").Value) * -1
+                        Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
                     ElseIf strDocCurrency = SystemCurrency And oApplication.Company.GetCompanyService.GetAdminInfo.SystemCurrency <> oApplication.Company.GetCompanyService.GetAdminInfo.LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
                         Vjov.JournalEntries.Lines.FCDebit = getDocumentQuantity(oTemp.Fields.Item("U_Z_UsdAmt").Value) * -1
@@ -7247,7 +7294,7 @@ Public Class clsUtilities
                         Vjov.JournalEntries.Lines.Debit = getDocumentQuantity(oTemp.Fields.Item("U_Z_ReimAmt").Value) * -1
                     End If
                 End If
-              
+
                 Try
                     If strDim(0) <> "" Then
                         Vjov.JournalEntries.Lines.CostingCode = strDim(0)
@@ -7271,6 +7318,8 @@ Public Class clsUtilities
             Next
             If Vjov.Add <> 0 Then
                 oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                strQuery = "Update [@Z_HR_EXPCL] Set U_Z_AppStatus = 'P' Where Code in (" & aCode & ")"
+                oRecordSet.DoQuery(strQuery)
                 Return False
             Else
                 Dim strJvNo As String

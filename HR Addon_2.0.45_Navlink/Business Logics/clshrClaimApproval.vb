@@ -68,7 +68,8 @@ Public Class clshrClaimApproval
             oGrid = aForm.Items.Item("1").Specific
             sQuery = " select distinct(T0.Code),T0.U_Z_TAEmpID,T0.U_Z_EmpID,T0.U_Z_EmpName,T0.U_Z_Subdt,T0.U_Z_Client,T0.U_Z_Project,Case T0.U_Z_DocStatus when 'C' then 'Closed' else 'Open' end as 'Document Status'  from [@Z_HR_OEXPCL] T0"
             sQuery += " Left outer Join [@Z_HR_EXPCL] T1 on T0.Code=T1.U_Z_DocRefNo "
-            sQuery += " JOIN [@Z_HR_APPT1] T4 ON T0.U_Z_EmpID = T4.U_Z_OUser   and (T1.""U_Z_AppStatus""='P' or T1.""U_Z_AppStatus""='-') "
+            'sQuery += " JOIN [@Z_HR_APPT1] T4 ON T0.U_Z_EmpID = T4.U_Z_OUser   and (T1.""U_Z_AppStatus""='P' or T1.""U_Z_AppStatus""='-') "
+            sQuery += " JOIN [@Z_HR_APPT1] T4 ON T0.U_Z_EmpID = T4.U_Z_OUser and T0.U_Z_DocStatus<>'D'"
             sQuery += " JOIN [@Z_HR_APPT2] T2 ON T4.DocEntry = T2.DocEntry "
             sQuery += " JOIN [@Z_HR_OAPPT] T3 ON T2.DocEntry = T3.DocEntry  "
             sQuery += " And (T1.U_Z_CurApprover = '" + oApplication.Company.UserName + "' OR T1.U_Z_NxtApprover = '" + oApplication.Company.UserName + "')"
@@ -106,7 +107,7 @@ Public Class clshrClaimApproval
             sQuery += " JOIN [@Z_HR_APPT1] T4 ON T0.U_Z_EmpID = T4.U_Z_OUser "
             sQuery += " JOIN [@Z_HR_APPT2] T2 ON T4.DocEntry = T2.DocEntry "
             sQuery += " JOIN [@Z_HR_OAPPT] T3 ON T2.DocEntry = T3.DocEntry  "
-            'sQuery += " And (T1.U_Z_CurApprover = '" + oApplication.Company.UserName + "' OR T1.U_Z_NxtApprover = '" + oApplication.Company.UserName + "')"
+            sQuery += " And (T1.U_Z_CurApprover = '" + oApplication.Company.UserName + "' OR T1.U_Z_NxtApprover = '" + oApplication.Company.UserName + "')"
             sQuery += " And isnull(T2.U_Z_AMan,'N')='Y' AND isnull(T3.U_Z_Active,'N')='Y' and  isnull(T1.U_Z_AppRequired,'N')='Y' and  T2.U_Z_AUser = '" + oApplication.Company.UserName + "' and isnull(T0.U_Z_DocStatus,'O')='C' And T3.U_Z_DocType = 'ExpCli' Order by T0.Code Desc"
             oGrid.DataTable.ExecuteQuery(sQuery)
             SummaryHeadDocument(aForm)
@@ -393,79 +394,79 @@ Public Class clshrClaimApproval
                 For index As Integer = 0 To oGrid.DataTable.Rows.Count - 1
                     'If oGrid.DataTable.GetValue("U_Z_CurAmt", index) > 0.0 Then
                     HeaderCode = oGrid.DataTable.GetValue("U_Z_DocRefNo", index)
-                    strDocEntry = oGrid.DataTable.GetValue("Code", index)
-
-                    strEmpID = oGrid.DataTable.GetValue("U_Z_EmpID", index)
-                    EmpName = oGrid.DataTable.GetValue("U_Z_EmpName", index)
-                    strQuery = "select T0.DocEntry,T1.LineId from [@Z_HR_OAPPT] T0 JOIN [@Z_HR_APPT2] T1 on T0.DocEntry=T1.DocEntry"
-                    strQuery += " JOIN [@Z_HR_APPT1] T2 on T1.DocEntry=T2.DocEntry"
-                    strQuery += " where T0.U_Z_DocType='ExpCli' AND T2.U_Z_OUser='" & strEmpID & "' AND T1.U_Z_AUser='" & oApplication.Company.UserName & "'"
-                    otestRs.DoQuery(strQuery)
-                    If otestRs.RecordCount > 0 Then
-                        HeadDocEntry = otestRs.Fields.Item(0).Value
-                        UserLineId = otestRs.Fields.Item(1).Value
-                    End If
-
-                    strQuery = "Select * from [@Z_HR_APHIS] where U_Z_DocEntry='" & strDocEntry & "' and U_Z_DocType='ExpCli' and U_Z_ApproveBy='" & oApplication.Company.UserName & "'"
-                    oRecordSet.DoQuery(strQuery)
-                    If oRecordSet.RecordCount > 0 Then
-                        oGeneralParams.SetProperty("DocEntry", oRecordSet.Fields.Item("DocEntry").Value)
-                        oGeneralData = oGeneralService.GetByParams(oGeneralParams)
-                        oGeneralData.SetProperty("U_Z_AppStatus", oGrid.DataTable.GetValue("U_Z_AppStatus", index))
-                        oGeneralData.SetProperty("U_Z_Remarks", oGrid.DataTable.GetValue("U_Z_Remarks", index))
-                        oGeneralData.SetProperty("U_Z_Month", oGrid.DataTable.GetValue("U_Z_Month", index))
-                        oGeneralData.SetProperty("U_Z_Year", oGrid.DataTable.GetValue("U_Z_Year", index))
-                        oGeneralData.SetProperty("U_Z_ADocEntry", HeadDocEntry)
-                        oGeneralData.SetProperty("U_Z_ALineId", UserLineId)
-                        Dim oTemp As SAPbobsCOM.Recordset
-                        oTemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-                        oTemp.DoQuery("Select * ,isnull(""firstName"",'') +  ' ' + isnull(""middleName"",'') +  ' ' + isnull(""lastName"",'') 'EmpName' from OHEM where ""userid""=" & oApplication.Company.UserSignature)
-                        If oTemp.RecordCount > 0 Then
-                            oGeneralData.SetProperty("U_Z_EmpId", oTemp.Fields.Item("empID").Value.ToString())
-                            oGeneralData.SetProperty("U_Z_EmpName", oTemp.Fields.Item("EmpName").Value)
-                            strEmpName = oTemp.Fields.Item("EmpName").Value
-                        Else
-                            oGeneralData.SetProperty("U_Z_EmpId", "")
-                            oGeneralData.SetProperty("U_Z_EmpName", "")
+                    If 1 = 1 Then 'HeaderCode <> "" Then
+                        strDocEntry = oGrid.DataTable.GetValue("Code", index)
+                        strEmpID = oGrid.DataTable.GetValue("U_Z_EmpID", index)
+                        EmpName = oGrid.DataTable.GetValue("U_Z_EmpName", index)
+                        strQuery = "select T0.DocEntry,T1.LineId from [@Z_HR_OAPPT] T0 JOIN [@Z_HR_APPT2] T1 on T0.DocEntry=T1.DocEntry"
+                        strQuery += " JOIN [@Z_HR_APPT1] T2 on T1.DocEntry=T2.DocEntry"
+                        strQuery += " where T0.U_Z_DocType='ExpCli' AND T2.U_Z_OUser='" & strEmpID & "' AND T1.U_Z_AUser='" & oApplication.Company.UserName & "'"
+                        otestRs.DoQuery(strQuery)
+                        If otestRs.RecordCount > 0 Then
+                            HeadDocEntry = otestRs.Fields.Item(0).Value
+                            UserLineId = otestRs.Fields.Item(1).Value
                         End If
-                        oGeneralService.Update(oGeneralData)
-                    ElseIf (strDocEntry <> "" And strDocEntry <> "0") Then
-                        Dim oTemp As SAPbobsCOM.Recordset
-                        oTemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-                        oTemp.DoQuery("Select * ,isnull(""firstName"",'') + ' ' + isnull(""middleName"",'') +  ' ' + isnull(""lastName"",'') 'EmpName' from OHEM where ""userid""=" & oApplication.Company.UserSignature)
-                        If oTemp.RecordCount > 0 Then
-                            oGeneralData.SetProperty("U_Z_EmpId", oTemp.Fields.Item("empID").Value.ToString())
-                            oGeneralData.SetProperty("U_Z_EmpName", oTemp.Fields.Item("EmpName").Value)
-                            strEmpName = oTemp.Fields.Item("EmpName").Value
-                        Else
-                            oGeneralData.SetProperty("U_Z_EmpId", "")
-                            oGeneralData.SetProperty("U_Z_EmpName", "")
+                        strQuery = "Select * from [@Z_HR_APHIS] where U_Z_DocEntry='" & strDocEntry & "' and U_Z_DocType='ExpCli' and U_Z_ApproveBy='" & oApplication.Company.UserName & "'"
+                        oRecordSet.DoQuery(strQuery)
+                        If oRecordSet.RecordCount > 0 Then
+                            oGeneralParams.SetProperty("DocEntry", oRecordSet.Fields.Item("DocEntry").Value)
+                            oGeneralData = oGeneralService.GetByParams(oGeneralParams)
+                            oGeneralData.SetProperty("U_Z_AppStatus", oGrid.DataTable.GetValue("U_Z_AppStatus", index))
+                            oGeneralData.SetProperty("U_Z_Remarks", oGrid.DataTable.GetValue("U_Z_Remarks", index))
+                            oGeneralData.SetProperty("U_Z_Month", oGrid.DataTable.GetValue("U_Z_Month", index))
+                            oGeneralData.SetProperty("U_Z_Year", oGrid.DataTable.GetValue("U_Z_Year", index))
+                            oGeneralData.SetProperty("U_Z_ADocEntry", HeadDocEntry)
+                            oGeneralData.SetProperty("U_Z_ALineId", UserLineId)
+                            Dim oTemp As SAPbobsCOM.Recordset
+                            oTemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                            oTemp.DoQuery("Select * ,isnull(""firstName"",'') +  ' ' + isnull(""middleName"",'') +  ' ' + isnull(""lastName"",'') 'EmpName' from OHEM where ""userid""=" & oApplication.Company.UserSignature)
+                            If oTemp.RecordCount > 0 Then
+                                oGeneralData.SetProperty("U_Z_EmpId", oTemp.Fields.Item("empID").Value.ToString())
+                                oGeneralData.SetProperty("U_Z_EmpName", oTemp.Fields.Item("EmpName").Value)
+                                strEmpName = oTemp.Fields.Item("EmpName").Value
+                            Else
+                                oGeneralData.SetProperty("U_Z_EmpId", "")
+                                oGeneralData.SetProperty("U_Z_EmpName", "")
+                            End If
+                            oGeneralService.Update(oGeneralData)
+                        ElseIf (strDocEntry <> "" And strDocEntry <> "0") Then
+                            Dim oTemp As SAPbobsCOM.Recordset
+                            oTemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                            oTemp.DoQuery("Select * ,isnull(""firstName"",'') + ' ' + isnull(""middleName"",'') +  ' ' + isnull(""lastName"",'') 'EmpName' from OHEM where ""userid""=" & oApplication.Company.UserSignature)
+                            If oTemp.RecordCount > 0 Then
+                                oGeneralData.SetProperty("U_Z_EmpId", oTemp.Fields.Item("empID").Value.ToString())
+                                oGeneralData.SetProperty("U_Z_EmpName", oTemp.Fields.Item("EmpName").Value)
+                                strEmpName = oTemp.Fields.Item("EmpName").Value
+                            Else
+                                oGeneralData.SetProperty("U_Z_EmpId", "")
+                                oGeneralData.SetProperty("U_Z_EmpName", "")
+                            End If
+                            oGeneralData.SetProperty("U_Z_DocEntry", strDocEntry.ToString())
+                            oGeneralData.SetProperty("U_Z_DocType", "ExpCli")
+                            oGeneralData.SetProperty("U_Z_AppStatus", oGrid.DataTable.GetValue("U_Z_AppStatus", index))
+                            oGeneralData.SetProperty("U_Z_Remarks", oGrid.DataTable.GetValue("U_Z_Remarks", index))
+                            oGeneralData.SetProperty("U_Z_Month", oGrid.DataTable.GetValue("U_Z_Month", index))
+                            oGeneralData.SetProperty("U_Z_Year", oGrid.DataTable.GetValue("U_Z_Year", index))
+                            oGeneralData.SetProperty("U_Z_ApproveBy", oApplication.Company.UserName)
+                            oGeneralData.SetProperty("U_Z_Approvedt", System.DateTime.Now)
+                            oGeneralData.SetProperty("U_Z_ADocEntry", HeadDocEntry)
+                            oGeneralData.SetProperty("U_Z_ALineId", UserLineId)
+                            oGeneralService.Add(oGeneralData)
                         End If
-                        oGeneralData.SetProperty("U_Z_DocEntry", strDocEntry.ToString())
-                        oGeneralData.SetProperty("U_Z_DocType", "ExpCli")
-                        oGeneralData.SetProperty("U_Z_AppStatus", oGrid.DataTable.GetValue("U_Z_AppStatus", index))
-                        oGeneralData.SetProperty("U_Z_Remarks", oGrid.DataTable.GetValue("U_Z_Remarks", index))
-                        oGeneralData.SetProperty("U_Z_Month", oGrid.DataTable.GetValue("U_Z_Month", index))
-                        oGeneralData.SetProperty("U_Z_Year", oGrid.DataTable.GetValue("U_Z_Year", index))
-                        oGeneralData.SetProperty("U_Z_ApproveBy", oApplication.Company.UserName)
-                        oGeneralData.SetProperty("U_Z_Approvedt", System.DateTime.Now)
-                        oGeneralData.SetProperty("U_Z_ADocEntry", HeadDocEntry)
-                        oGeneralData.SetProperty("U_Z_ALineId", UserLineId)
-                        oGeneralService.Add(oGeneralData)
-                    End If
-                    updateFinalStatus(aForm, HeadDocEntry, strDocEntry, strEmpID, oGrid.DataTable.GetValue("U_Z_AppStatus", index), oGrid.DataTable.GetValue("U_Z_Year", index), oGrid.DataTable.GetValue("U_Z_Month", index), oGrid.DataTable.GetValue("U_Z_Remarks", index))
-                    If oGrid.DataTable.GetValue("U_Z_AppStatus", index) = "A" Then
-                        If MailDocEntry = "" Then
-                            MailDocEntry = strDocEntry
-                        Else
-                            MailDocEntry = MailDocEntry & "," & strDocEntry
+                        updateFinalStatus(aForm, HeadDocEntry, strDocEntry, strEmpID, oGrid.DataTable.GetValue("U_Z_AppStatus", index), oGrid.DataTable.GetValue("U_Z_Year", index), oGrid.DataTable.GetValue("U_Z_Month", index), oGrid.DataTable.GetValue("U_Z_Remarks", index))
+                        If oGrid.DataTable.GetValue("U_Z_AppStatus", index) = "A" Then
+                            If MailDocEntry = "" Then
+                                MailDocEntry = strDocEntry
+                            Else
+                                MailDocEntry = MailDocEntry & "," & strDocEntry
+                            End If
                         End If
-                    End If
-                    If oGrid.DataTable.GetValue("U_Z_AppStatus", index) = "R" Then
-                        If RejDocEntry = "" Then
-                            RejDocEntry = strDocEntry
-                        Else
-                            RejDocEntry = RejDocEntry & "," & strDocEntry
+                        If oGrid.DataTable.GetValue("U_Z_AppStatus", index) = "R" Then
+                            If RejDocEntry = "" Then
+                                RejDocEntry = strDocEntry
+                            Else
+                                RejDocEntry = RejDocEntry & "," & strDocEntry
+                            End If
                         End If
                     End If
                     ' End If
@@ -512,8 +513,16 @@ Public Class clshrClaimApproval
             Throw ex
         End Try
     End Sub
-    Private Sub updateFinalStatus(ByVal aForm As SAPbouiCOM.Form, ByVal strTemplateNo As String, ByVal strDocEntry As String, ByVal aEmpID As String, ByVal strStatus As String, ByVal strYear As Integer, ByVal IntMonth As Integer, ByVal Remarks As String, Optional ByVal EmpName As String = "")
+    Private Sub updateFinalStatus(ByVal aForm As SAPbouiCOM.Form, ByVal strTemplateNo As String, ByVal strDocEntry As String, ByVal aEmpID As String, ByVal strStatus As String, ByVal aYear As String, ByVal aMonth As String, ByVal Remarks As String, Optional ByVal EmpName As String = "")
+
         Try
+            Dim strYear, IntMonth As Integer
+            If aYear = "" Then
+                strYear = 0
+            End If
+            If aMonth = "" Then
+                IntMonth = 0
+            End If
             Dim intLineID As Integer
             Dim strMessageUser, StrMailMessage As String
             Dim oRecordSet, oTemp As SAPbobsCOM.Recordset
@@ -541,15 +550,7 @@ Public Class clshrClaimApproval
                 sQuery += " And T2.U_Z_AUser = '" + oApplication.Company.UserName + "' And T3.U_Z_DocType = 'ExpCli'"
                 oRecordSet.DoQuery(sQuery)
                 If Not oRecordSet.EoF Then
-                    'sQuery = "Update [@Z_HR_EXPCL] Set U_Z_Year=" & strYear & ",U_Z_Month=" & IntMonth & ", U_Z_AppStatus = 'A' Where Code = '" + strDocEntry + "'"
-                    'oRecordSet.DoQuery(sQuery)
-                    'oApplication.Utilities.AddtoUDT1_PayrollTrans(strDocEntry)
-
                     Try
-                        'If oApplication.Company.InTransaction() Then
-                        '    oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit)
-                        'End If
-                        'oApplication.Company.StartTransaction()
                         Dim blnvalue As Boolean
                         sQuery = "Update [@Z_HR_EXPCL] Set U_Z_Year=" & strYear & ",U_Z_Month=" & IntMonth & ", U_Z_AppStatus = 'A',U_Z_RejRemark='" & Remarks & "' Where Code = '" + strDocEntry + "'"
                         oRecordSet.DoQuery(sQuery)
@@ -557,7 +558,6 @@ Public Class clshrClaimApproval
                         oTemp.DoQuery(sQuery)
                         If oTemp.RecordCount > 0 Then
                             Dim Posting, Reimbused As String
-
                             Posting = oTemp.Fields.Item("U_Z_Posting").Value
                             Reimbused = oTemp.Fields.Item("U_Z_Reimburse").Value
                             If Posting = "P" And Reimbused = "Y" Then
@@ -575,7 +575,9 @@ Public Class clshrClaimApproval
                         '    oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack)
                         'End If
                     End Try
-
+                Else
+                    sQuery = "Update [@Z_HR_EXPCL] Set U_Z_RejRemark='" & Remarks & "' Where Code = '" + strDocEntry + "'"
+                    oRecordSet.DoQuery(sQuery)
                 End If
             ElseIf strStatus = "R" Then
                 sQuery = " Select T2.DocEntry "

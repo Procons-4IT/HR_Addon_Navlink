@@ -104,11 +104,14 @@
       <DependentUpon>rptAppraisal.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Business Logics\clsActivity.vb" />
     <Compile Include="Business Logics\clsAppShortListedApproval.vb" />
     <Compile Include="Business Logics\clsBranchesMaster.vb" />
     <Compile Include="Business Logics\clsChooseFromList.vb" />
     <Compile Include="Business Logics\clsDepartmentMaster.vb" />
     <Compile Include="Business Logics\clsDisRule.vb" />
+    <Compile Include="Business Logics\clsFamilyDetails.vb" />
+    <Compile Include="Business Logics\clsfamilyMembers.vb" />
     <Compile Include="Business Logics\clshrAppHisDetails.vb" />
     <Compile Include="Business Logics\clshrAppraisalDistribution.vb" />
     <Compile Include="Business Logics\clshrAppraisalPeriod.vb" />
@@ -435,7 +438,9 @@
     <Content Include="bin\Debug\XML Files\frm_Hr_MPRequest.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="bin\Debug\XML Files\frm_hr_NewTrainReq.xml" />
+    <Content Include="bin\Debug\XML Files\frm_hr_NewTrainReq.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="bin\Debug\XML Files\frm_hr_ORejectionMaster.xml" />
     <Content Include="bin\Debug\XML Files\frm_hr_OrgStructure.xml" />
     <Content Include="bin\Debug\XML Files\frm_hr_PeoCategory.xml" />

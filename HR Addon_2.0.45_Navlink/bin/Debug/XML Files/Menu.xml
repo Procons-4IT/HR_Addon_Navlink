@@ -36,7 +36,10 @@
       <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_General" Image="" Position="6" String="Section Master"
       Type="1" UniqueID="z_mnu_hr_Sec">	</Menu>
       <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_General" Image="" Position="7" String="Map Organizational Chart"
-     Type="1" UniqueID="z_mnu_hr_OrgSt">	</Menu>   
+     Type="1" UniqueID="z_mnu_hr_OrgSt">	</Menu>
+
+      <Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_General" Image="" Position="8" String="Family Members Master"
+   Type="1" UniqueID="Z_FM1"></Menu>
       <!--<Menu Checked="0" Enabled="1" FatherUID="Z_mnu_HR_General" Image="" Position="8" String="Objects On Loan Master"
     Type="1" UniqueID="z_mnu_hr_OLoan">	</Menu>-->
 
