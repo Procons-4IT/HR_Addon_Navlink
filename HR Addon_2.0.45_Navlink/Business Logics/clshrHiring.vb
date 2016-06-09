@@ -1088,49 +1088,61 @@ Public Class clshrHiring
 
                    
 
-                    otemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-                    otemp.DoQuery("select isnull(U_Z_Level,0) as U_Z_Level,U_Z_School,U_Z_GrFromDate,U_Z_GrT0Date,U_Z_Major,U_Z_Diploma  from [@Z_HR_CRAPP3] where isnull(U_Z_Level,'')<>'' and DocEntry='" & strcode & "'")
-                    For introw As Integer = 0 To otemp.RecordCount - 1
-                        oEmployee.EducationInfo.Add()
-                        oEmployee.EducationInfo.SetCurrentLine(count)
-                        oEmployee.EducationInfo.EmployeeNo = otemp.Fields.Item(0).Value
-                        oEmployee.EducationInfo.FromDate = otemp.Fields.Item("U_Z_GrFromDate").Value
-                        oEmployee.EducationInfo.ToDate = otemp.Fields.Item("U_Z_GrT0Date").Value
-                        If otemp.Fields.Item("U_Z_Level").Value <> 0 Then
-                            oEmployee.EducationInfo.EducationType = otemp.Fields.Item("U_Z_Level").Value
-                        Else
-                            oEmployee.EducationInfo.EducationType = 0
-                        End If
-                        oEmployee.EducationInfo.Institute = otemp.Fields.Item("U_Z_School").Value
-                        oEmployee.EducationInfo.Major = otemp.Fields.Item("U_Z_Major").Value
-                        oEmployee.EducationInfo.Diploma = otemp.Fields.Item("U_Z_Diploma").Value
-                        otemp.MoveNext()
-                        count = count + 1
-                    Next
-                    otemp2 = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-                    otemp2.DoQuery("select U_Z_FromDate,U_Z_ToDate,isnull(U_Z_PrEmployer,'') as U_Z_PrEmployer,U_Z_PrPosition,U_Z_Remarks   from [@Z_HR_CRAPP4] where isnull(U_Z_PrEmployer,'')<>'' and DocEntry='" & strcode & "'")
-                    count = 0
-                    For introw As Integer = 0 To otemp2.RecordCount - 1
-                        oEmployee.PreviousEmpoymentInfo.Add()
-                        oEmployee.PreviousEmpoymentInfo.SetCurrentLine(count)
-                        oEmployee.PreviousEmpoymentInfo.FromDtae = otemp2.Fields.Item("U_Z_FromDate").Value
-                        oEmployee.PreviousEmpoymentInfo.ToDate = otemp2.Fields.Item("U_Z_ToDate").Value
-                        If otemp2.Fields.Item("U_Z_PrEmployer").Value <> "" Then
-                            oEmployee.PreviousEmpoymentInfo.Employer = otemp2.Fields.Item("U_Z_PrEmployer").Value
-                        Else
-                            oEmployee.PreviousEmpoymentInfo.Employer = ""
-                        End If
-                        oEmployee.PreviousEmpoymentInfo.Position = otemp2.Fields.Item("U_Z_PrPosition").Value
-                        oEmployee.PreviousEmpoymentInfo.Remarks = otemp2.Fields.Item("U_Z_Remarks").Value
-                        otemp2.MoveNext()
-                        count = count + 1
-                    Next
+                    'otemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                    'otemp.DoQuery("select isnull(U_Z_Level,0) as U_Z_Level,U_Z_School,U_Z_GrFromDate,U_Z_GrT0Date,U_Z_Major,U_Z_Diploma  from [@Z_HR_CRAPP3] where isnull(U_Z_Level,'')<>'' and DocEntry='" & strcode & "'")
+                    'count = 0
+                    'For introw As Integer = 0 To otemp.RecordCount - 1
+                    '    If count = 0 Then
+                    '        oEmployee.EducationInfo.SetCurrentLine(count)
+                    '    Else
+                    '        oEmployee.EducationInfo.Add()
+                    '        oEmployee.EducationInfo.SetCurrentLine(count)
+                    '    End If
+
+                    '    oEmployee.EducationInfo.EmployeeNo = otemp.Fields.Item(0).Value
+                    '    oEmployee.EducationInfo.FromDate = otemp.Fields.Item("U_Z_GrFromDate").Value
+                    '    oEmployee.EducationInfo.ToDate = otemp.Fields.Item("U_Z_GrT0Date").Value
+                    '    If otemp.Fields.Item("U_Z_Level").Value <> 0 Then
+                    '        Dim IntType As Integer = CInt(otemp.Fields.Item("U_Z_Level").Value)
+                    '        oEmployee.EducationInfo.EducationType = CInt(otemp.Fields.Item("U_Z_Level").Value)
+                    '    Else
+                    '        oEmployee.EducationInfo.EducationType = 0
+                    '    End If
+                    '    oEmployee.EducationInfo.Institute = otemp.Fields.Item("U_Z_School").Value
+                    '    oEmployee.EducationInfo.Major = otemp.Fields.Item("U_Z_Major").Value
+                    '    oEmployee.EducationInfo.Diploma = otemp.Fields.Item("U_Z_Diploma").Value
+                    '    otemp.MoveNext()
+                    '    count = count + 1
+                    'Next
+                    'otemp2 = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+                    'otemp2.DoQuery("select U_Z_FromDate,U_Z_ToDate,isnull(U_Z_PrEmployer,'') as U_Z_PrEmployer,U_Z_PrPosition,U_Z_Remarks   from [@Z_HR_CRAPP4] where isnull(U_Z_PrEmployer,'')<>'' and DocEntry='" & strcode & "'")
+                    'count = 0
+                    'For introw As Integer = 0 To otemp2.RecordCount - 1
+                    '    If count = 0 Then
+                    '        oEmployee.PreviousEmpoymentInfo.SetCurrentLine(count)
+                    '    Else
+                    '        oEmployee.PreviousEmpoymentInfo.Add()
+                    '        oEmployee.PreviousEmpoymentInfo.SetCurrentLine(count)
+                    '    End If
+                    '    oEmployee.PreviousEmpoymentInfo.FromDtae = otemp2.Fields.Item("U_Z_FromDate").Value
+                    '    oEmployee.PreviousEmpoymentInfo.ToDate = otemp2.Fields.Item("U_Z_ToDate").Value
+                    '    If otemp2.Fields.Item("U_Z_PrEmployer").Value <> "" Then
+                    '        oEmployee.PreviousEmpoymentInfo.Employer = otemp2.Fields.Item("U_Z_PrEmployer").Value
+                    '    Else
+                    '        oEmployee.PreviousEmpoymentInfo.Employer = ""
+                    '    End If
+                    '    oEmployee.PreviousEmpoymentInfo.Position = otemp2.Fields.Item("U_Z_PrPosition").Value
+                    '    oEmployee.PreviousEmpoymentInfo.Remarks = otemp2.Fields.Item("U_Z_Remarks").Value
+                    '    otemp2.MoveNext()
+                    '    count = count + 1
+                    'Next
                     If oEmployee.Add <> 0 Then
                         If oApplication.Company.InTransaction() Then
                             oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack)
                             Return False
                         End If
                         oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                        Return False
                     Else
                         Dim strdocnum, strqry1 As String
                         otemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
@@ -1139,12 +1151,12 @@ Public Class clshrHiring
                         strqry1 = "Update [@Z_HR_OCRAPP] set U_Z_EmpId=" & otemp.Fields.Item(0).Value & ",U_Z_Status='H' where DocEntry=" & strcode
                         otemp1.DoQuery(strqry1)
                         Dim strMessage As String
-                        strMessage = "<!DOCTYPE html><html><head><title></title></head><body>  <span> Dear " & otemp.Fields.Item(1).Value & " .</span> <br />"
-                        strMessage += " <span> You have been hired in our company under the position " & otemp.Fields.Item(2).Value & " .</span> <br />"
-                        strMessage += " <span> Congratulations </span> <br /> </body></html>"
+                        strMessage = "<!DOCTYPE html><html><head><title></title></head><body>  <span> Dear " & otemp.Fields.Item(1).Value & " .</span> <br /><br />"
+                        strMessage += " <span> You have been hired in our company under the position " & otemp.Fields.Item(2).Value & " .</span> <br /><br />"
+                        strMessage += " <span> Congratulations </span> <br /><br /></body></html>"
 
                         ' Dim strMessage As String = "Dear " & otemp.Fields.Item(1).Value & ".You have been hired in our company under the position " & otemp.Fields.Item(2).Value & ".Congratulations."
-                        oApplication.Utilities.SendMail_ApprovalRegTraining(strMessage, otemp.Fields.Item(0).Value)
+                        oApplication.Utilities.SendMail_ApprovalRegTraining(strMessage, otemp.Fields.Item(0).Value, "E", otemp.Fields.Item(2).Value)
 
                         otemp1.DoQuery("Update [@Z_HR_OHEM1] set U_Z_IntervStatus='P',U_Z_EmpId='" & otemp.Fields.Item(0).Value & "' where U_Z_IPHODSta='S' and U_Z_HRAppID=" & strcode)
                         Dim dtpro As Date = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "128"))
@@ -1213,6 +1225,7 @@ Public Class clshrHiring
             If oApplication.Company.InTransaction() Then
                 oApplication.Company.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack)
             End If
+            oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
             Return False
         End Try
         Return True

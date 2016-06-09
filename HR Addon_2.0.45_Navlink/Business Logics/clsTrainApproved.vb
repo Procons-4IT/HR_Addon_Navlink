@@ -258,6 +258,7 @@ Public Class clsTrainApproved
         oGrid.Columns.Item("U_Z_AttendeesStatus").TitleObject.Caption = "Attendees Training Status"
         oGrid.Columns.Item("U_Z_AttendeesStatus").Type = SAPbouiCOM.BoGridColumnType.gct_ComboBox
         ocombo = oGrid.Columns.Item("U_Z_AttendeesStatus")
+        ocombo.ValidValues.Add("R", "Registered")
         ocombo.ValidValues.Add("D", "Dropped")
         ocombo.ValidValues.Add("C", "completed")
         ocombo.ValidValues.Add("F", "Failed")
@@ -304,6 +305,7 @@ Public Class clsTrainApproved
         oGrid.Columns.Item("U_Z_AttendeesStatus").TitleObject.Caption = "Attendees Training Status"
         oGrid.Columns.Item("U_Z_AttendeesStatus").Type = SAPbouiCOM.BoGridColumnType.gct_ComboBox
         ocombo = oGrid.Columns.Item("U_Z_AttendeesStatus")
+        ocombo.ValidValues.Add("R", "Registered")
         ocombo.ValidValues.Add("D", "Dropped")
         ocombo.ValidValues.Add("C", "Completed")
         ocombo.ValidValues.Add("F", "Failed")
@@ -583,12 +585,17 @@ Public Class clsTrainApproved
 
     Private Sub updateadditionalcost(ByVal aGrid As SAPbouiCOM.Grid, ByVal bGrid As SAPbouiCOM.Grid, ByVal aStartRow As Integer, ByVal aEndrow As Integer)
         Dim strSourceCode, strDesgCode As String
+        Dim oRec As SAPbobsCOM.Recordset
+        oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
         For intRow As Integer = aStartRow To aEndrow
             strSourceCode = aGrid.DataTable.GetValue("Code", intRow)
             For intloop As Integer = 0 To bGrid.DataTable.Rows.Count - 1
                 strDesgCode = bGrid.DataTable.GetValue("Code", intloop)
+                ' bGrid.DataTable.SetValue("U_Z_AttendeesStatus", intloop, "R")
                 If strSourceCode = strDesgCode Then
-                    bGrid.DataTable.SetValue("U_Z_TotalCost", intloop, aGrid.DataTable.GetValue("U_Z_AttCost", intRow) + aGrid.DataTable.GetValue("U_Z_AddionalCost", intRow))
+                    Dim total As Double = aGrid.DataTable.GetValue("U_Z_AttCost", intRow) + aGrid.DataTable.GetValue("U_Z_AddionalCost", intRow)
+                    bGrid.DataTable.SetValue("U_Z_TotalCost", intloop, total)
+                    oRec.DoQuery("Update [@Z_HR_TRIN1] set U_Z_TotalCost=" & total & " where Code='" & strDesgCode & "'")
                     Exit For
                 End If
             Next

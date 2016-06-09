@@ -35,7 +35,7 @@ Public Class clshrHireToEmp
         strqry = " select U_Z_ReqNo,U_Z_JobPosi ,T0.DocEntry, U_Z_HRAppID,U_Z_HRAppName,T0.U_Z_Dept,T0.U_Z_DeptName,T0.U_Z_Dob,U_Z_Email,T0.U_Z_Mobile,T0.U_Z_YrExp,T0.U_Z_Skills,"
         strqry = strqry & " case T1.U_Z_Status when 'R' then 'Received' when 'S' then 'Shortlisted' when 'I' then 'Interviewed'"
         strqry = strqry & " when 'O' then 'Job Offering' when 'J' then 'Rejected' when 'A' then 'Offer Accepted' when 'H' then 'Hired' else 'Canceled' end as U_Z_Status  ,T1.U_Z_JoinDate 'Joining Date' from [@Z_HR_OHEM1] T0 inner join [@Z_HR_OCRAPP] T1"
-        strqry = strqry & "     on T0.U_Z_HRAppID=T1.DocEntry  where T1.U_Z_Status ='A' and T0.U_Z_AppStatus='A' " 'and T0.U_Z_ApplStatus='S'"
+        strqry = strqry & "     on T0.U_Z_HRAppID=T1.DocEntry  where T1.U_Z_Status ='A' and T0.U_Z_AppStatus='A' and ISNULL(T1.U_Z_EmpId,'')='' " 'and T0.U_Z_ApplStatus='S'"
         oGrid.DataTable.ExecuteQuery(strqry)
         oGrid.Columns.Item("DocEntry").TitleObject.Caption = "DocEntry"
         oGrid.Columns.Item("DocEntry").Visible = False

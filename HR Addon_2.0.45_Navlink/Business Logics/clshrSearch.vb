@@ -237,7 +237,7 @@ Public Class clshrSearch
         oGrid.DataTable = oForm.DataSources.DataTables.Item("DT_0")
         oCombobox = aForm.Items.Item("7").Specific
         strQry1 = "Select U_Z_HRAPPID from [@Z_HR_OHEM1] where U_Z_Dept='" & oCombobox.Selected.Value & "' and U_Z_ReqNo='" & oApplication.Utilities.getEdittextvalue(aForm, "20") & "'"
-        strqry = "select distinct(''),T0.U_Z_RequestCode,T0.DocEntry,U_Z_FirstName,T0.U_Z_Dob,T0.U_Z_Mobile ,T0.U_Z_EmailId,T0.U_Z_YrExp,T0.U_Z_AppDate,"
+        strqry = "select distinct(''),T0.U_Z_RequestCode,T0.DocEntry,U_Z_FirstName +' '+ U_Z_LastName AS U_Z_FirstName,T0.U_Z_Dob,T0.U_Z_Mobile ,T0.U_Z_EmailId,T0.U_Z_YrExp,T0.U_Z_AppDate,"
         strqry = strqry & " U_Z_Skills from  [@Z_HR_OCRAPP] T0 inner join [@Z_HR_CRAPP6] T1 on T0.DocEntry=T1.DocEntry inner join [@Z_HR_CRAPP3] T2 on T0.DocEntry=T2.DocEntry inner join [@Z_HR_CRAPP4] T3 on T0.DocEntry=T3.DocEntry "
         ' strqry = strqry & " where U_Z_Status='R' and  T1.U_Z_PosCode='" & oApplication.Utilities.getEdittextvalue(aForm, "30") & "' and  T0.DocEntry not in (" & strQry1 & ") and " & strCondition
         strqry = strqry & " where U_Z_Status='R' and " & strCondition ' T0.DocEntry not in (" & strQry1 & ") and " & strCondition

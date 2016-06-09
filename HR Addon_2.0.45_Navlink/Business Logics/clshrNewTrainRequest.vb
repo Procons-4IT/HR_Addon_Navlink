@@ -133,7 +133,7 @@ Public Class clshrNewTrainRequest
         Try
             Dim oTest As SAPbobsCOM.Recordset
             oTest = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-            Dim strfromdt, Reqno, strTodt, Leaveduty, Travelon, returnon, ResumeOn As String
+            Dim strfromdt, Reqno, strTodt, Leaveduty, Travelon, returnon, ResumeOn, Attachment As String
             Dim fromdt, todt As Date
             Dim Blflag As Boolean
             Reqno = oApplication.Utilities.getEdittextvalue(aForm, "16")
@@ -145,6 +145,11 @@ Public Class clshrNewTrainRequest
             Travelon = oApplication.Utilities.getEdittextvalue(aForm, "50")
             returnon = oApplication.Utilities.getEdittextvalue(aForm, "52")
             ResumeOn = oApplication.Utilities.getEdittextvalue(aForm, "54")
+            Attachment = oApplication.Utilities.getEdittextvalue(aForm, "63")
+            If Attachment = "" Then
+                oApplication.Utilities.setEdittextvalue(aForm, "63", "")
+            End If
+
             If Reqno = "" Then
                 oApplication.Utilities.Message("Enter Training Title...", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
                 Return False
@@ -312,6 +317,8 @@ Public Class clshrNewTrainRequest
                                         Dim oRec As SAPbobsCOM.Recordset
                                         oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                                         oRec.DoQuery("Update [@Z_HR_ONTREQ] set U_Z_AppStatus='C' where DocEntry='" & oApplication.Utilities.getEdittextvalue(oForm, "4") & "'")
+                                        Dim strEmailmsg As String = "New Training request number :" & oApplication.Utilities.getEdittextvalue(oForm, "4") & " has been cancelled by " & oApplication.Utilities.getEdittextvalue(oForm, "10")
+                                        oApplication.Utilities.SendMail_RequestApproval(strEmailmsg, oApplication.Utilities.getEdittextvalue(oForm, "8"), , , , "C")
                                         oForm.Close()
                                     Case "62"
                                         If oForm.Mode <> SAPbouiCOM.BoFormMode.fm_OK_MODE And oForm.Mode <> SAPbouiCOM.BoFormMode.fm_ADD_MODE And oForm.Mode <> SAPbouiCOM.BoFormMode.fm_UPDATE_MODE Then
@@ -389,8 +396,10 @@ Public Class clshrNewTrainRequest
                     oRec.DoQuery("select AttachPath from OADP")
                     If oRec.RecordCount > 0 Then
                         Dim strfileName As String = otest.Fields.Item("U_Z_Attachment").Value
-                        Dim filename As String = Path.GetFileName(strfileName)
-                        File.Copy(strfileName, oRec.Fields.Item("AttachPath").Value + filename)
+                        If strfileName <> "" Then
+                            Dim filename As String = Path.GetFileName(strfileName)
+                            File.Copy(strfileName, oRec.Fields.Item("AttachPath").Value + filename)
+                        End If
                     End If
                 End If
 

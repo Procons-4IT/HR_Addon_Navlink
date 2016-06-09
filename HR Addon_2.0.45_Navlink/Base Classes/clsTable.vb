@@ -3205,7 +3205,7 @@ Public NotInheritable Class clsTable
             AddFields("Z_HR_TRIN1", "Z_DeptCode", "Department Code", SAPbobsCOM.BoFieldTypes.db_Alpha, , 40)
             AddFields("Z_HR_TRIN1", "Z_DeptName", "Department Name", SAPbobsCOM.BoFieldTypes.db_Alpha, , 200)
             AddFields("Z_HR_TRIN1", "Z_ApplyDate", "Requested Date", SAPbobsCOM.BoFieldTypes.db_Date)
-            addField("@Z_HR_TRIN1", "Z_AttendeesStatus", "Attendees Training Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "D,C,F,L,W", "Dropped,completed,Failed,Canceled,WithDraw", "C")
+            addField("@Z_HR_TRIN1", "Z_AttendeesStatus", "Attendees Training Status", SAPbobsCOM.BoFieldTypes.db_Alpha, 1, SAPbobsCOM.BoFldSubTypes.st_Address, "D,C,F,L,W,R", "Dropped,completed,Failed,Canceled,WithDraw,Registered", "R")
             AddFields("Z_HR_TRIN1", "Z_AddionalCost", "Additional Cost of Attendees", SAPbobsCOM.BoFieldTypes.db_Float, , , SAPbobsCOM.BoFldSubTypes.st_Sum)
             AddFields("Z_HR_TRIN1", "Z_TrainHours", "Training Attened Hours", SAPbobsCOM.BoFieldTypes.db_Numeric)
             AddFields("Z_HR_TRIN1", "Z_AbsenceDate", "Absence Date", SAPbobsCOM.BoFieldTypes.db_Date)

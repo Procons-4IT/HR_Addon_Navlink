@@ -349,8 +349,8 @@ Public Class ClshrIPProcessForm
             'oForm.Items.Item("14").Visible = True
             oForm.Items.Item("2").Left = oForm.Items.Item("3").Left + oForm.Items.Item("3").Width + 5
 
-            oForm.Items.Item("8").Visible = True
-            oForm.Items.Item("9").Visible = True
+            oForm.Items.Item("8").Visible = False
+            oForm.Items.Item("9").Visible = False
             oForm.Items.Item("11").Visible = False
             oForm.Items.Item("12").Visible = False
         End If
@@ -565,8 +565,8 @@ Public Class ClshrIPProcessForm
         oForm.Items.Item("13").Visible = True
         oForm.Items.Item("14").Visible = True
         oForm.Items.Item("2").Left = oForm.Items.Item("14").Left + oForm.Items.Item("14").Width + 5
-        oForm.Items.Item("8").Visible = True
-        oForm.Items.Item("9").Visible = True
+        oForm.Items.Item("8").Visible = False
+        oForm.Items.Item("9").Visible = False
         oForm.Items.Item("11").Visible = False
         oForm.Items.Item("12").Visible = False
 
@@ -581,7 +581,7 @@ Public Class ClshrIPProcessForm
             oForm.Items.Item("3").Enabled = True
         End If
 
-        oForm.Items.Item("5").Height = 180
+        oForm.Items.Item("5").Height = 200
 
     End Sub
 #End Region
@@ -683,13 +683,13 @@ Public Class ClshrIPProcessForm
         oForm.Items.Item("13").Visible = True
         oForm.Items.Item("14").Visible = True
         oForm.Items.Item("2").Left = oForm.Items.Item("14").Left + oForm.Items.Item("14").Width + 5
-        oForm.Items.Item("8").Visible = True
-        oForm.Items.Item("9").Visible = True
+        oForm.Items.Item("8").Visible = False
+        oForm.Items.Item("9").Visible = False
         oForm.Items.Item("11").Visible = False
         oForm.Items.Item("12").Visible = False
 
         oApplication.Utilities.setEdittextvalue(oForm, "9", "")
-        oForm.Items.Item("5").Height = 180
+        oForm.Items.Item("5").Height = 200
     End Sub
 #End Region
 

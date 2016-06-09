@@ -414,6 +414,7 @@ Public Class clshrTrainingReg
                 oUserTable.UserFields.Fields.Item("U_Z_AppRequired").Value = "N"
                 oUserTable.UserFields.Fields.Item("U_Z_Remarks").Value = oGrid.DataTable.GetValue("U_Z_Remarks", intRow)
                 oUserTable.UserFields.Fields.Item("U_Z_ApplyDate").Value = dt
+                oUserTable.UserFields.Fields.Item("U_Z_AttendeesStatus").Value = "R"
                 If oUserTable.Add <> 0 Then
                     oApplication.Utilities.Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
                     Return False

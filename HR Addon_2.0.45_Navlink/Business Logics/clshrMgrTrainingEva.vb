@@ -114,6 +114,7 @@ Public Class clshrMgrTrainingEva
             oGrid.Columns.Item("U_Z_AttendeesStatus").TitleObject.Caption = "Training Status"
             oGrid.Columns.Item("U_Z_AttendeesStatus").Type = SAPbouiCOM.BoGridColumnType.gct_ComboBox
             ocombo = oGrid.Columns.Item("U_Z_AttendeesStatus")
+            ocombo.ValidValues.Add("R", "Registered")
             ocombo.ValidValues.Add("D", "Dropped")
             ocombo.ValidValues.Add("C", "Completed")
             ocombo.ValidValues.Add("F", "Failed")

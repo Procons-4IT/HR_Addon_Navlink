@@ -3821,7 +3821,7 @@ Public Class clsUtilities
 
         End If
     End Sub
-    Public Sub SendMail_RequestApproval(ByVal aMessage As String, ByVal Empid As String, Optional ByVal aMail As String = "", Optional ByVal SerialNo As String = "", Optional ByVal ReqNo As String = "")
+    Public Sub SendMail_RequestApproval(ByVal aMessage As String, ByVal Empid As String, Optional ByVal aMail As String = "", Optional ByVal SerialNo As String = "", Optional ByVal ReqNo As String = "", Optional ByVal Cancelreq As String = "")
         Dim oRecordset As SAPbobsCOM.Recordset
         oRecordset = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
         oRecordset.DoQuery("Select U_Z_SMTPSERV,U_Z_SMTPPORT,U_Z_SMTPUSER,U_Z_SMTPPWD,U_Z_SSL From [@Z_HR_OMAIL]")
@@ -3834,7 +3834,12 @@ Public Class clsUtilities
             If mailServer <> "" And mailId <> "" And mailPwd <> "" Then
                 If aMail = "" Then
                     oRecordset.DoQuery("Select * from OHEM where empID='" & Empid & "'")
-                    aMail = oRecordset.Fields.Item("email").Value
+                    If Cancelreq = "" Then
+                        aMail = oRecordset.Fields.Item("email").Value
+                    Else
+                        aMail = oRecordset.Fields.Item("U_Z_HRMail").Value
+                    End If
+
                 Else
                     aMail = aMail
                 End If
@@ -3878,8 +3883,9 @@ Public Class clsUtilities
             Dim strMesage As String
             strESSLink = strESSLink
             strMesage = "<!DOCTYPE html><html><head><title></title></head><body>  <a>" & Message & "<a> <br> <a href=" & strESSLink & " >Please login to ESS</a></body></html>"
-            mail.Subject = strMesage
+            mail.Subject = Message
             If SerialNo <> "" Then
+                mail.Subject = Message
                 mail.Body = BuildHtmBody(SerialNo, aUser, "ExpClaim", mType, strMesage, aEmpId)
             Else
                 mail.Body = strMesage
@@ -6935,7 +6941,9 @@ Public Class clsUtilities
                     Case HistoryDoctype.AppShort
                         strQuery = "Select * from  [@Z_HR_OHEM1]  where DocEntry='" & strReqNo & "'"
                         oTemp.DoQuery(strQuery)
-                        strMessage = "  Candidate Name   " & oTemp.Fields.Item("U_Z_HRAPPName").Value & ": Applied Position : " & oTemp.Fields.Item("U_Z_JobPosi").Value
+                        strQuery = "Select U_Z_PosName from [@Z_HR_ORMPREQ] where DocEntry='" & oTemp.Fields.Item("U_Z_ReqNo").Value & "'"
+                        oRecordSet.DoQuery(strQuery)
+                        strMessage = "  Candidate Name   " & oTemp.Fields.Item("U_Z_HRAPPName").Value & " and Applied Position : " & oRecordSet.Fields.Item("U_Z_PosName").Value
                         strOrginator = strMessage
                     Case HistoryDoctype.Final
                         strQuery = "Select * from  [@Z_HR_OHEM1]  where DocEntry='" & strReqNo & "'"
@@ -7201,13 +7209,15 @@ Public Class clsUtilities
                     Vjov.JournalEntries.Lines.Add()
                     Vjov.JournalEntries.Lines.SetCurrentLine(LineNo)
                 End If
-                Vjov.JournalEntries.Reference = aCode ' oTemp.Fields.Item("U_Z_EmpID").Value
+                Vjov.JournalEntries.Reference = oTemp.Fields.Item("U_Z_DocRefNo").Value ' aCode ' oTemp.Fields.Item("U_Z_EmpID").Value
                 Vjov.JournalEntries.Reference2 = getEmpName(oTemp.Fields.Item("U_Z_EmpID").Value)
                 strDimentions = oTemp.Fields.Item("U_Z_Dimension").Value
                 strDim = strDimentions.Split(";")
                 strdebitCode = getSAPAccount(oTemp.Fields.Item("U_Z_DebitCode").Value)
                 Vjov.JournalEntries.Lines.AccountCode = strdebitCode
                 Vjov.JournalEntries.Lines.LineMemo = oTemp.Fields.Item("U_Z_RejRemark").Value
+                Vjov.JournalEntries.Lines.Reference1 = oTemp.Fields.Item("Code").Value
+
                 If dblTransAmt > 0 Then
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
@@ -7267,6 +7277,7 @@ Public Class clsUtilities
                     Vjov.JournalEntries.Lines.ShortName = BussCode
                 End If
                 Vjov.JournalEntries.Lines.LineMemo = oTemp.Fields.Item("U_Z_RejRemark").Value
+                Vjov.JournalEntries.Lines.Reference1 = oTemp.Fields.Item("Code").Value
                 If dblTransAmt > 0 Then
                     If strDocCurrency <> LocalCurrency Then
                         Vjov.JournalEntries.Lines.FCCurrency = strDocCurrency
@@ -7546,7 +7557,7 @@ Public Class clsUtilities
             Message(oApplication.Company.GetLastErrorDescription, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
         End Try
     End Function
-    Public Sub SendMail_ApprovalRegTraining(ByVal aMessage As String, ByVal aUser As String)
+    Public Sub SendMail_ApprovalRegTraining(ByVal aMessage As String, ByVal aUser As String, Optional ByVal AEmpCreation As String = "", Optional ByVal Position As String = "")
         Dim aMail As String
         oRecordSet = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
         oRecordSet.DoQuery("Select U_Z_SMTPSERV,U_Z_SMTPPORT,U_Z_SMTPUSER,U_Z_SMTPPWD,U_Z_SSL From [@Z_HR_OMAIL]")
@@ -7560,7 +7571,7 @@ Public Class clsUtilities
                 oRecordSet.DoQuery("Select isnull(email,'') from OHEM where empID='" & aUser & "'")
                 aMail = oRecordSet.Fields.Item(0).Value
                 If aMail <> "" Then
-                    SendMailforApproval(mailServer, mailPort, mailId, mailPwd, mailSSL, aMail, aMail, "Approval", aMessage)
+                    SendMailforApproval1(mailServer, mailPort, mailId, mailPwd, mailSSL, aMail, aMail, "Approval", aMessage, AEmpCreation, , , Position)
                 End If
 
             Else
@@ -7568,5 +7579,44 @@ Public Class clsUtilities
             End If
 
         End If
+    End Sub
+    Private Sub SendMailforApproval1(ByVal mailServer As String, ByVal mailPort As String, ByVal mailId As String, ByVal mailpwd As String, ByVal mailSSL As String, ByVal toId As String, ByVal ccId As String, ByVal mType As String, ByVal Message As String, Optional ByVal SerialNo As String = "", Optional ByVal aUser As String = "", Optional ByVal aEmpId As String = "", Optional ByVal Position As String = "")
+        Try
+            'Dim strRptPath As String = System.Windows.Forms.Application.StartupPath.Trim() & "\Report.pdf"
+            Dim oTest As SAPbobsCOM.Recordset
+            oTest = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+            oTest.DoQuery("Select * from [@Z_HR_OWEB]")
+            Dim strESSLink As String = ""
+            If oTest.RecordCount > 0 Then
+                strESSLink = oTest.Fields.Item("U_Z_WebPath").Value
+            End If
+            SmtpServer.Credentials = New Net.NetworkCredential(mailId, mailpwd)
+            SmtpServer.Port = mailPort
+            SmtpServer.EnableSsl = mailSSL
+            SmtpServer.Host = mailServer
+            mail = New Net.Mail.MailMessage()
+            mail.From = New Net.Mail.MailAddress(mailId, "HRMS")
+            mail.To.Add(toId)
+            '  mail.CC.Add(ccId)
+            mail.IsBodyHtml = True
+            mail.Priority = MailPriority.High
+            Dim strMesage As String
+            strESSLink = strESSLink
+            strMesage = "<!DOCTYPE html><html><head><title></title></head><body>  <a>" & Message & "<a> <br> <a href=" & strESSLink & " >Please login to ESS</a></body></html>"
+            If SerialNo = "E" Then
+                mail.Subject = "Congratulations.You have been hired in our company under the position " & Position
+            Else
+                mail.Subject = Message
+            End If
+            mail.Body = strMesage
+
+            ' mail.Attachments.Add(New Net.Mail.Attachment(path))
+            ' Message
+            SmtpServer.Send(mail)
+        Catch ex As Exception
+            oApplication.Utilities.Message(ex.Message, SAPbouiCOM.BoStatusBarMessageType.smt_Warning)
+        Finally
+            mail.Dispose()
+        End Try
     End Sub
 End Class
