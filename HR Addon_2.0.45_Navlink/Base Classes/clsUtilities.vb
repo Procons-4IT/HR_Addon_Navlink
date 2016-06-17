@@ -6224,17 +6224,20 @@ Public Class clsUtilities
                         Case HistoryDoctype.Rec
                             sQuery = "Update [@Z_HR_ORMPREQ] Set U_Z_AppStatus = 'A' Where DocEntry = '" + strDocEntry + "'"
                             oRecordSet.DoQuery(sQuery)
-                            StrMailMessage = "Recruitment request has been approved for the request number :" & CInt(strDocEntry)
+                            StrMailMessage = "Recruitment Requisition " & CInt(strDocEntry) & " has been approved."
                             SendMail_RequestApproval(StrMailMessage, LifeEmpId)
                         Case HistoryDoctype.AppShort
                             sQuery = "Update [@Z_HR_OHEM1] Set U_Z_AppStatus = 'A' Where DocEntry = '" + strDocEntry + "'"
                             oRecordSet.DoQuery(sQuery)
-                            sQuery = "Select U_Z_HRAppID,U_Z_Email from [@Z_HR_OHEM1] where DocEntry = '" + strDocEntry + "'"
+                            sQuery = "Select U_Z_HRAppID,U_Z_Email,U_Z_ReqNo from [@Z_HR_OHEM1] where DocEntry = '" + strDocEntry + "'"
                             oRecordSet.DoQuery(sQuery)
                             If oRecordSet.RecordCount > 0 Then
                                 sQuery = "Update [@Z_HR_OCRAPP] Set U_Z_Status = 'N' Where DocEntry = '" + oRecordSet.Fields.Item(0).Value + "'"
                                 oTemp.DoQuery(sQuery)
-                                StrMailMessage = "You have approved in shortlist level.Reference number is :" & CInt(strDocEntry)
+                                sQuery = "Select U_Z_PosName from [@Z_HR_ORMPREQ] where DocEntry='" & oRecordSet.Fields.Item("U_Z_ReqNo").Value & "'"
+                                oTemp.DoQuery(sQuery)
+                                ' StrMailMessage = "You have approved in shortlist level.Reference number is :" & CInt(strDocEntry)
+                                StrMailMessage = " You have been Shortlisted for the Position of  " & oTemp.Fields.Item("U_Z_PosName").Value
                                 ' SendMail_RequestApproval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value)
                                 SendMail_Approval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value, , oRecordSet.Fields.Item(0).Value, "123", StrMailMessage)
                             End If
@@ -6994,7 +6997,7 @@ Public Class clsUtilities
                         oTemp.DoQuery(strQuery)
                         strQuery = "Select U_Z_PosName from [@Z_HR_ORMPREQ] where DocEntry='" & oTemp.Fields.Item("U_Z_ReqNo").Value & "'"
                         oRecordSet.DoQuery(strQuery)
-                        strMessage = " " & oTemp.Fields.Item("U_Z_HRAPPName").Value & " , applying to the Position  " & oRecordSet.Fields.Item("U_Z_PosName").Value
+                        strMessage = " ," & oTemp.Fields.Item("U_Z_HRAPPName").Value & " , applying to the Position  " & oRecordSet.Fields.Item("U_Z_PosName").Value
                         strOrginator = strMessage
                         strHRName = "123"
                         strAppMessage = " You have been Shortlisted for the Position of  " & oRecordSet.Fields.Item("U_Z_PosName").Value
@@ -7071,7 +7074,7 @@ Public Class clsUtilities
                     strEmailMessage = strReqType + "  " + strReqNo + " " + strOrginator + " Needs Your Approval "
                 End If
                 SendMail_Approval(strEmailMessage, strMessageUser, strMessageUser, strExpNo, , strHRName)
-                If strAppMessage = "" Then
+                If strAppMessage <> "" Then
                     SendMail_Approval(strAppMessage, strMessageUser, strMessageUser, , strReqNo, strHRName, strAppMessage)
                 End If
 

@@ -453,7 +453,7 @@ Public Class clsActivity
 #Region "Item Event"
     Public Overrides Sub ItemEvent(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean)
         Try
-            If pVal.FormTypeEx = frm_Activity Then
+            If pVal.FormTypeEx = "1234" Then
                 Select Case pVal.BeforeAction
                     Case True
                         Select Case pVal.EventType

@@ -1624,7 +1624,7 @@ Public Class clshrMPRequest
                             strMessage = " Recruiter  :" & otest.Fields.Item("U_Z_EmpName").Value & ": Position : " & otest.Fields.Item("U_Z_PosName").Value
                             oApplication.Utilities.UpdateApprovalRequired("@Z_HR_ORMPREQ", "DocEntry", otest.Fields.Item("DocEntry").Value, "Y", intTempID)
                             '  oApplication.Utilities.InitialMessage("Manpower Recruitment Request", otest.Fields.Item("DocEntry").Value, oApplication.Utilities.DocApproval(oForm, HeaderDoctype.Rec, otest.Fields.Item("U_Z_DeptCode").Value), intTempID, otest.Fields.Item("U_Z_DeptName").Value, HistoryDoctype.Rec)
-                            oApplication.Utilities.InitialMessage("Manpower Recruitment Request", otest.Fields.Item("DocEntry").Value, oApplication.Utilities.DocApproval(oForm, HeaderDoctype.Rec, otest.Fields.Item("U_Z_DeptCode").Value), intTempID, strMessage, HistoryDoctype.Rec)
+                            oApplication.Utilities.InitialMessage("The Recruitment Requisition", otest.Fields.Item("DocEntry").Value, oApplication.Utilities.DocApproval(oForm, HeaderDoctype.Rec, otest.Fields.Item("U_Z_DeptCode").Value), intTempID, strMessage, HistoryDoctype.Rec)
                         Else
                             oApplication.Utilities.UpdateApprovalRequired("@Z_HR_ORMPREQ", "DocEntry", otest.Fields.Item("DocEntry").Value, "N", intTempID)
                         End If
