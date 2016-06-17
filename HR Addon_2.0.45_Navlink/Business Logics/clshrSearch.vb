@@ -528,7 +528,7 @@ Public Class clshrSearch
                     Dim intTempID As String = status 'oApplication.Utilities.GetTemplateID(oForm, HeaderDoctype.Rec, otest.Fields.Item("U_Z_DeptCode").Value)
                     If intTempID <> "0" Then
                         oApplication.Utilities.UpdateApprovalRequired("@Z_HR_OHEM1", "DocEntry", otestRs.Fields.Item("DocEntry").Value, "Y", intTempID)
-                        oApplication.Utilities.InitialMessage("Shortlisting Applicant Request", otestRs.Fields.Item("DocEntry").Value, oApplication.Utilities.DocApproval(oForm, HeaderDoctype.Rec, strDepartmentCode), intTempID, strDepartmentCode, HistoryDoctype.AppShort)
+                        oApplication.Utilities.InitialMessage("Shortlisted Applicant, Request", otestRs.Fields.Item("DocEntry").Value, "P", intTempID, strDepartmentCode, HistoryDoctype.AppShort)
                     Else
                         oApplication.Utilities.UpdateApprovalRequired("@Z_HR_ORMPREQ", "DocEntry", otestRs.Fields.Item("DocEntry").Value, "N", intTempID)
                     End If

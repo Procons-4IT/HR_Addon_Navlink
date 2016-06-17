@@ -3798,9 +3798,7 @@ Public Class clsUtilities
         End If
         oMessageService.SendMessage(oMessage)
     End Sub
-
-
-    Public Sub SendMail_Approval(ByVal aMessage As String, ByVal aMail As String, ByVal aUser As String, Optional ByVal SerialNo As String = "", Optional ByVal ReqNo As String = "")
+    Public Sub SendMail_ApplicantApproval(ByVal aMessage As String, ByVal aMail As String, ByVal aUser As String, Optional ByVal SerialNo As String = "", Optional ByVal ReqNo As String = "", Optional HRName As String = "")
         oRecordSet = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
         oRecordSet.DoQuery("Select U_Z_SMTPSERV,U_Z_SMTPPORT,U_Z_SMTPUSER,U_Z_SMTPPWD,U_Z_SSL From [@Z_HR_OMAIL]")
         If Not oRecordSet.EoF Then
@@ -3812,9 +3810,49 @@ Public Class clsUtilities
             If mailServer <> "" And mailId <> "" And mailPwd <> "" Then
                 oRecordSet.DoQuery("Select * from OUSR where USER_CODE='" & aUser & "'")
                 aMail = oRecordSet.Fields.Item("E_Mail").Value
-                If aMail <> "" Then
-                    SendMailforApproval(mailServer, mailPort, mailId, mailPwd, mailSSL, aMail, aMail, "Approval", aMessage, SerialNo, aUser)
+                If HRName <> "" Then
+                    HRName = oRecordSet.Fields.Item("U_NAME").Value
                 End If
+                If aMail <> "" Then
+                    SendMailforApproval(mailServer, mailPort, mailId, mailPwd, mailSSL, aMail, aMail, "Approval", aMessage, SerialNo, aUser, , HRName)
+                End If
+            Else
+                oApplication.Utilities.Message("Mail Server Details Not Configured...", SAPbouiCOM.BoStatusBarMessageType.smt_Warning)
+            End If
+
+        End If
+    End Sub
+
+    Public Sub SendMail_Approval(ByVal aMessage As String, ByVal aMail As String, ByVal aUser As String, Optional ByVal SerialNo As String = "", Optional ByVal ReqNo As String = "", Optional HRName As String = "", Optional strappmsg As String = "")
+        oRecordSet = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        oRecordSet.DoQuery("Select U_Z_SMTPSERV,U_Z_SMTPPORT,U_Z_SMTPUSER,U_Z_SMTPPWD,U_Z_SSL From [@Z_HR_OMAIL]")
+        If Not oRecordSet.EoF Then
+            mailServer = oRecordSet.Fields.Item("U_Z_SMTPSERV").Value
+            mailPort = oRecordSet.Fields.Item("U_Z_SMTPPORT").Value
+            mailId = oRecordSet.Fields.Item("U_Z_SMTPUSER").Value
+            mailPwd = oRecordSet.Fields.Item("U_Z_SMTPPWD").Value
+            mailSSL = oRecordSet.Fields.Item("U_Z_SSL").Value
+            If mailServer <> "" And mailId <> "" And mailPwd <> "" Then
+                If strappmsg = "" Then
+                    oRecordSet.DoQuery("Select * from OUSR where USER_CODE='" & aUser & "'")
+                    aMail = oRecordSet.Fields.Item("E_Mail").Value
+                    If HRName <> "" Then
+                        HRName = oRecordSet.Fields.Item("U_NAME").Value
+                    End If
+                    If aMail <> "" Then
+                        SendMailforApproval(mailServer, mailPort, mailId, mailPwd, mailSSL, aMail, aMail, "Approval", aMessage, SerialNo, aUser, , HRName)
+                    End If
+                Else
+                    oRecordSet.DoQuery("Select * from [@Z_HR_OCRAPP] where DocEntry='" & ReqNo & "'")
+                    aMail = oRecordSet.Fields.Item("U_Z_EmailId").Value
+                    If HRName <> "" Then
+                        HRName = oRecordSet.Fields.Item("U_Z_FirstName").Value + " " + oRecordSet.Fields.Item("U_Z_LastName").Value
+                    End If
+                    If aMail <> "" Then
+                        SendMailforApproval(mailServer, mailPort, mailId, mailPwd, mailSSL, aMail, aMail, "Approval", strappmsg, SerialNo, aUser, , HRName)
+                    End If
+                End If
+              
             Else
                 oApplication.Utilities.Message("Mail Server Details Not Configured...", SAPbouiCOM.BoStatusBarMessageType.smt_Warning)
             End If
@@ -3860,7 +3898,7 @@ Public Class clsUtilities
         End If
     End Sub
 
-    Private Sub SendMailforApproval(ByVal mailServer As String, ByVal mailPort As String, ByVal mailId As String, ByVal mailpwd As String, ByVal mailSSL As String, ByVal toId As String, ByVal ccId As String, ByVal mType As String, ByVal Message As String, Optional ByVal SerialNo As String = "", Optional ByVal aUser As String = "", Optional ByVal aEmpId As String = "")
+    Private Sub SendMailforApproval(ByVal mailServer As String, ByVal mailPort As String, ByVal mailId As String, ByVal mailpwd As String, ByVal mailSSL As String, ByVal toId As String, ByVal ccId As String, ByVal mType As String, ByVal Message As String, Optional ByVal SerialNo As String = "", Optional ByVal aUser As String = "", Optional ByVal aEmpId As String = "", Optional HRName As String = "")
         Try
             'Dim strRptPath As String = System.Windows.Forms.Application.StartupPath.Trim() & "\Report.pdf"
             Dim oTest As SAPbobsCOM.Recordset
@@ -3882,12 +3920,20 @@ Public Class clsUtilities
             mail.Priority = MailPriority.High
             Dim strMesage As String
             strESSLink = strESSLink
-            strMesage = "<!DOCTYPE html><html><head><title></title></head><body>  <a>" & Message & "<a> <br> <a href=" & strESSLink & " >Please login to ESS</a></body></html>"
             mail.Subject = Message
             If SerialNo <> "" Then
                 mail.Subject = Message
+                strMesage = "<!DOCTYPE html><html><head><title></title></head><body>  <a>" & Message & "<a> <br> <a href=" & strESSLink & " >Please login to ESS</a></body></html>"
+
                 mail.Body = BuildHtmBody(SerialNo, aUser, "ExpClaim", mType, strMesage, aEmpId)
             Else
+                If HRName <> "" Then
+                    strMesage = "<!DOCTYPE html><html><head><title></title></head><body>  <a> Dear " & HRName & "<a> <br><br>   <a>" & Message & "<a> <br><br> <a href=" & strESSLink & " >Please login to ESS</a> <br><br><br> Best Regards</body></html>"
+                Else
+                    strMesage = "<!DOCTYPE html><html><head><title></title></head><body>  <a>" & Message & "<a> <br> <a href=" & strESSLink & " >Please login to ESS</a><br><br><br> Best Regards</body></html>"
+
+                End If
+
                 mail.Body = strMesage
             End If
 
@@ -6189,7 +6235,8 @@ Public Class clsUtilities
                                 sQuery = "Update [@Z_HR_OCRAPP] Set U_Z_Status = 'N' Where DocEntry = '" + oRecordSet.Fields.Item(0).Value + "'"
                                 oTemp.DoQuery(sQuery)
                                 StrMailMessage = "You have approved in shortlist level.Reference number is :" & CInt(strDocEntry)
-                                SendMail_RequestApproval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value)
+                                ' SendMail_RequestApproval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value)
+                                SendMail_Approval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value, , oRecordSet.Fields.Item(0).Value, "123", StrMailMessage)
                             End If
                           
                         Case HistoryDoctype.EmpPro
@@ -6210,8 +6257,9 @@ Public Class clsUtilities
                             If oRecordSet.RecordCount > 0 Then
                                 sQuery = "Update [@Z_HR_OCRAPP] set U_Z_Status = 'M' where DocEntry = '" & oRecordSet.Fields.Item(0).Value & "'"
                                 oTemp.DoQuery(sQuery)
-                                StrMailMessage = "You have approved in Final level.Reference number is :" & CInt(strDocEntry)
-                                SendMail_RequestApproval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value)
+                                StrMailMessage = "You have been approved in the Final level.Reference number is :" & CInt(strDocEntry)
+                                ' SendMail_RequestApproval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value )
+                                SendMail_Approval(StrMailMessage, aEmpID, oRecordSet.Fields.Item(1).Value, , oRecordSet.Fields.Item(0).Value, "123", StrMailMessage)
                             End If
                     End Select
                 End If
@@ -6896,7 +6944,9 @@ Public Class clsUtilities
                 strMessageUser = oRecordSet.Fields.Item(0).Value
                 oMessage.Subject = strReqType + " " + "Need Your Approval "
                 Dim strMessage As String = ""
+                Dim strAppMessage As String = ""
                 Dim strheader As String = enDocType
+                Dim strHRName As String = ""
                 Select Case enDocType
                     Case HistoryDoctype.BankTime 'Leave Request
                         strQuery = "Select * from  [@Z_PAY_OLADJTRANS1] where Code='" & strReqNo & "'"
@@ -6936,15 +6986,18 @@ Public Class clsUtilities
                     Case HistoryDoctype.Rec
                         strQuery = "Select * from [@Z_HR_ORMPREQ]  where DocEntry='" & strReqNo & "'"
                         oTemp.DoQuery(strQuery)
-                        strMessage = " Recruited by    " & oTemp.Fields.Item("U_Z_EmpName").Value & ": for  : " & oTemp.Fields.Item("U_Z_PosName").Value & " Position "
+                        strMessage = " Created by  " & oTemp.Fields.Item("U_Z_EmpName").Value & " for  the " & oTemp.Fields.Item("U_Z_PosName").Value & " Position "
                         strOrginator = strMessage
+                        strHRName = "123"
                     Case HistoryDoctype.AppShort
                         strQuery = "Select * from  [@Z_HR_OHEM1]  where DocEntry='" & strReqNo & "'"
                         oTemp.DoQuery(strQuery)
                         strQuery = "Select U_Z_PosName from [@Z_HR_ORMPREQ] where DocEntry='" & oTemp.Fields.Item("U_Z_ReqNo").Value & "'"
                         oRecordSet.DoQuery(strQuery)
-                        strMessage = "  Candidate Name   " & oTemp.Fields.Item("U_Z_HRAPPName").Value & " and Applied Position : " & oRecordSet.Fields.Item("U_Z_PosName").Value
+                        strMessage = " " & oTemp.Fields.Item("U_Z_HRAPPName").Value & " , applying to the Position  " & oRecordSet.Fields.Item("U_Z_PosName").Value
                         strOrginator = strMessage
+                        strHRName = "123"
+                        strAppMessage = " You have been Shortlisted for the Position of  " & oRecordSet.Fields.Item("U_Z_PosName").Value
                     Case HistoryDoctype.Final
                         strQuery = "Select * from  [@Z_HR_OHEM1]  where DocEntry='" & strReqNo & "'"
                         oTemp.DoQuery(strQuery)
@@ -7017,8 +7070,12 @@ Public Class clsUtilities
                 Else
                     strEmailMessage = strReqType + "  " + strReqNo + " " + strOrginator + " Needs Your Approval "
                 End If
+                SendMail_Approval(strEmailMessage, strMessageUser, strMessageUser, strExpNo, , strHRName)
+                If strAppMessage = "" Then
+                    SendMail_Approval(strAppMessage, strMessageUser, strMessageUser, , strReqNo, strHRName, strAppMessage)
+                End If
 
-                SendMail_Approval(strEmailMessage, strMessageUser, strMessageUser, strExpNo)
+
                
             End If
 

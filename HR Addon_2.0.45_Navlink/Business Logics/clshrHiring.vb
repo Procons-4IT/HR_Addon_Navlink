@@ -1147,16 +1147,19 @@ Public Class clshrHiring
                         Dim strdocnum, strqry1 As String
                         otemp = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                         oApplication.Company.GetNewObjectCode(strdocnum)
-                        otemp.DoQuery("select T0.empID,isnull(T0.firstName,'') +' ' + Isnull(T0.middleName,'') + ' ' + Isnull(T0.lastName,'') as 'Empname' , T1.[descriptio] FROM OHEM T0  INNER JOIN OHPS T1 ON T0.position = T1.posID  where T0.empID=" & strdocnum)
+
+                        '  U_Z_HR_ApplId()
+                        '  otemp.DoQuery("select T0.empID,isnull(T0.firstName,'') +' ' + Isnull(T0.middleName,'') + ' ' + Isnull(T0.lastName,'') as 'Empname' , T1.[descriptio] FROM OHEM T0  INNER JOIN OHPS T1 ON T0.position = T1.posID  where T0.empID=" & strdocnum)
+                        otemp.DoQuery("select T0.empID,isnull(T0.firstName,'') +' ' + Isnull(T0.middleName,'') + ' ' + Isnull(T0.lastName,'') as 'Empname' , T1.[descriptio] FROM OHEM T0  INNER JOIN OHPS T1 ON T0.position = T1.posID  where T0.""U_Z_HR_ApplId""='" & strcode & "'")
                         strqry1 = "Update [@Z_HR_OCRAPP] set U_Z_EmpId=" & otemp.Fields.Item(0).Value & ",U_Z_Status='H' where DocEntry=" & strcode
                         otemp1.DoQuery(strqry1)
                         Dim strMessage As String
                         strMessage = "<!DOCTYPE html><html><head><title></title></head><body>  <span> Dear " & otemp.Fields.Item(1).Value & " .</span> <br /><br />"
                         strMessage += " <span> You have been hired in our company under the position " & otemp.Fields.Item(2).Value & " .</span> <br /><br />"
                         strMessage += " <span> Congratulations </span> <br /><br /></body></html>"
-
                         ' Dim strMessage As String = "Dear " & otemp.Fields.Item(1).Value & ".You have been hired in our company under the position " & otemp.Fields.Item(2).Value & ".Congratulations."
                         oApplication.Utilities.SendMail_ApprovalRegTraining(strMessage, otemp.Fields.Item(0).Value, "E", otemp.Fields.Item(2).Value)
+
 
                         otemp1.DoQuery("Update [@Z_HR_OHEM1] set U_Z_IntervStatus='P',U_Z_EmpId='" & otemp.Fields.Item(0).Value & "' where U_Z_IPHODSta='S' and U_Z_HRAppID=" & strcode)
                         Dim dtpro As Date = oApplication.Utilities.GetDateTimeValue(oApplication.Utilities.getEdittextvalue(aForm, "128"))
