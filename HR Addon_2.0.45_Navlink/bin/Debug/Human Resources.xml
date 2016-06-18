@@ -6,71 +6,7 @@ HumanResources
 </name>
 </assembly>
 <members>
-<member name="T:HumanResources.dsAI.HeaderDataTable">
-	<summary>
-Represents the strongly named DataTable class.
-</summary>
-</member><member name="T:HumanResources.dsAI.BussinessDataTable">
-	<summary>
-Represents the strongly named DataTable class.
-</summary>
-</member><member name="T:HumanResources.dsAI.PeopleDataTable">
-	<summary>
-Represents the strongly named DataTable class.
-</summary>
-</member><member name="T:HumanResources.dsAI.CompetencyDataTable">
-	<summary>
-Represents the strongly named DataTable class.
-</summary>
-</member><member name="T:HumanResources.dsAI.HRFinalDataTable">
-	<summary>
-Represents the strongly named DataTable class.
-</summary>
-</member><member name="T:HumanResources.dsAI.HeaderRow">
-	<summary>
-Represents strongly named DataRow class.
-</summary>
-</member><member name="T:HumanResources.dsAI.BussinessRow">
-	<summary>
-Represents strongly named DataRow class.
-</summary>
-</member><member name="T:HumanResources.dsAI.PeopleRow">
-	<summary>
-Represents strongly named DataRow class.
-</summary>
-</member><member name="T:HumanResources.dsAI.CompetencyRow">
-	<summary>
-Represents strongly named DataRow class.
-</summary>
-</member><member name="T:HumanResources.dsAI.HRFinalRow">
-	<summary>
-Represents strongly named DataRow class.
-</summary>
-</member><member name="T:HumanResources.dsAI.HeaderRowChangeEvent">
-	<summary>
-Row event argument class
-</summary>
-</member><member name="T:HumanResources.dsAI.BussinessRowChangeEvent">
-	<summary>
-Row event argument class
-</summary>
-</member><member name="T:HumanResources.dsAI.PeopleRowChangeEvent">
-	<summary>
-Row event argument class
-</summary>
-</member><member name="T:HumanResources.dsAI.CompetencyRowChangeEvent">
-	<summary>
-Row event argument class
-</summary>
-</member><member name="T:HumanResources.dsAI.HRFinalRowChangeEvent">
-	<summary>
-Row event argument class
-</summary>
-</member><member name="T:HumanResources.dsAI">
-	<summary>
-Represents a strongly typed in-memory cache of data.
-</summary>
-</member><member name="P:HumanResources.My.Resources.Resources.ResourceManager">
+<member name="P:HumanResources.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
 </summary>
@@ -144,6 +80,70 @@ Row event argument class
 Row event argument class
 </summary>
 </member><member name="T:HumanResources.dsAppraisal">
+	<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member><member name="T:HumanResources.dsAI.HeaderDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:HumanResources.dsAI.BussinessDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:HumanResources.dsAI.PeopleDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:HumanResources.dsAI.CompetencyDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:HumanResources.dsAI.HRFinalDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:HumanResources.dsAI.HeaderRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:HumanResources.dsAI.BussinessRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:HumanResources.dsAI.PeopleRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:HumanResources.dsAI.CompetencyRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:HumanResources.dsAI.HRFinalRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:HumanResources.dsAI.HeaderRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:HumanResources.dsAI.BussinessRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:HumanResources.dsAI.PeopleRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:HumanResources.dsAI.CompetencyRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:HumanResources.dsAI.HRFinalRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:HumanResources.dsAI">
 	<summary>
 Represents a strongly typed in-memory cache of data.
 </summary>

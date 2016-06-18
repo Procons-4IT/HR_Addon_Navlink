@@ -674,3 +674,9 @@ E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.57_Navlink\bin\Debug\Interop.
 E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.57_Navlink\obj\Debug\Human Resources.vbprojResolveAssemblyReference.cache
 E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.57_Navlink\obj\Debug\HumanResources.Resources.resources
 E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.57_Navlink\obj\Debug\Human Resources.vbproj.GenerateResource.Cache
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.58_Navlink\obj\Debug\Interop.SAPbobsCOM.dll
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.58_Navlink\obj\Debug\Interop.SAPbouiCOM.dll
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.58_Navlink\obj\Debug\Human Resources.vbproj.ResolveComReference.cache
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.58_Navlink\obj\Debug\Human Resources.exe
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.58_Navlink\obj\Debug\Human Resources.xml
+E:\Projects\AddOn\HR AddOn\SourceCode\HR Addon_2.0.58_Navlink\obj\Debug\Human Resources.pdb

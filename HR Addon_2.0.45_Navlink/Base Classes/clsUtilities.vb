@@ -5908,7 +5908,7 @@ Public Class clsUtilities
                         End If
                     Next
                 Case HistoryDoctype.Rec
-                    strDocType1 = "Manpower Recruitment  Request"
+                    strDocType1 = "The Recruitment Requisition "
                     For index As Integer = 0 To oGrid.DataTable.Rows.Count - 1
                         If oGrid.Rows.IsSelected(index) Then
                             strDocEntry = oGrid.DataTable.GetValue("DocEntry", index)
@@ -5918,7 +5918,7 @@ Public Class clsUtilities
                         End If
                     Next
                 Case HistoryDoctype.AppShort
-                    strDocType1 = "Candiate Shortlisting"
+                    strDocType1 = "Shortlisted Applicant,Request"
                     For index As Integer = 0 To oGrid.DataTable.Rows.Count - 1
                         If oGrid.Rows.IsSelected(index) Then
                             strDocEntry = oGrid.DataTable.GetValue("DocEntry", index)
@@ -5927,7 +5927,7 @@ Public Class clsUtilities
                         End If
                     Next
                 Case HistoryDoctype.Final
-                    strDocType1 = "Final Candidate Approval"
+                    strDocType1 = "Final Candidate Approval,Request"
                     For index As Integer = 0 To oGrid.DataTable.Rows.Count - 1
                         If oGrid.Rows.IsSelected(index) Then
                             strDocEntry = oGrid.DataTable.GetValue("DocEntry", index)
@@ -7091,6 +7091,7 @@ Public Class clsUtilities
         , ByVal strTemplateNo As String, ByVal strOrginator As String, ByVal strAuthorizer As String, ByVal enDocType As modVariables.HistoryDoctype)
         Try
             Dim strQuery As String
+            Dim strHRName As String = ""
             Dim strMessageUser As String
             Dim intLineID As Integer
             Dim oRecordSet, oTemp As SAPbobsCOM.Recordset
@@ -7116,7 +7117,7 @@ Public Class clsUtilities
 
                 If Not oRecordSet.EoF Then
                     strMessageUser = oRecordSet.Fields.Item(0).Value
-                    oMessage.Subject = strReqType & ":" & " Need Your Approval "
+                    oMessage.Subject = strReqType & ":" & " Needs Your Approval "
                     Dim strMessage As String = ""
                     Select Case enDocType
                         Case HistoryDoctype.BankTime 'Bank Time Request
@@ -7157,17 +7158,23 @@ Public Class clsUtilities
                         Case HistoryDoctype.Rec
                             strQuery = "Select * from [@Z_HR_ORMPREQ]  where DocEntry='" & strReqNo & "'"
                             oTemp.DoQuery(strQuery)
-                            strMessage = " Recruited by   :" & oTemp.Fields.Item("U_Z_EmpName").Value & ": for  " & oTemp.Fields.Item("U_Z_PosName").Value & " Position"
+                            strMessage = " Created by  " & oTemp.Fields.Item("U_Z_EmpName").Value & " for the  " & oTemp.Fields.Item("U_Z_PosName").Value & " Position"
                             strOrginator = strMessage
+                            strHRName = "123"
                         Case HistoryDoctype.AppShort
                             strQuery = "Select * from  [@Z_HR_OHEM1]  where DocEntry='" & strReqNo & "'"
                             oTemp.DoQuery(strQuery)
-                            strMessage = " Candidate Name  :" & oTemp.Fields.Item("U_Z_HRAPPName").Value & ": Applied Position : " & oTemp.Fields.Item("U_Z_JobPosi").Value
+                            strQuery = "Select U_Z_PosName from [@Z_HR_ORMPREQ] where DocEntry='" & oTemp.Fields.Item("U_Z_ReqNo").Value & "'"
+                            oRecordSet.DoQuery(strQuery)
+                            strMessage = " ," & oTemp.Fields.Item("U_Z_HRAPPName").Value & " , applying to the Position  " & oRecordSet.Fields.Item("U_Z_PosName").Value
                             strOrginator = strMessage
+                            strHRName = "123"
                         Case HistoryDoctype.Final
                             strQuery = "Select * from  [@Z_HR_OHEM1]  where DocEntry='" & strReqNo & "'"
                             oTemp.DoQuery(strQuery)
-                            strMessage = " Candidate Name  :" & oTemp.Fields.Item("U_Z_HRAPPName").Value & ": Applied Position : " & oTemp.Fields.Item("U_Z_JobPosi").Value
+                            strQuery = "Select U_Z_PosName from [@Z_HR_ORMPREQ] where DocEntry='" & oTemp.Fields.Item("U_Z_ReqNo").Value & "'"
+                            oRecordSet.DoQuery(strQuery)
+                            strMessage = " ," & oTemp.Fields.Item("U_Z_HRAPPName").Value & " , applying to the Position  " & oRecordSet.Fields.Item("U_Z_PosName").Value
                             strOrginator = strMessage
                         Case HistoryDoctype.TraReq
                             strQuery = "Select * from  [@Z_HR_OTRAREQ]  where DocEntry='" & strReqNo & "'"
@@ -7216,7 +7223,7 @@ Public Class clsUtilities
                     oLine.Value = strReqNo
                     oMessageService.SendMessage(oMessage)
                     Dim strEmailMessage As String = strReqType + "  " + strReqNo + " " + strOrginator + " Needs Your Approval "
-                    SendMail_Approval(strEmailMessage, strMessageUser, strMessageUser)
+                    SendMail_Approval(strEmailMessage, strMessageUser, strMessageUser, , strReqNo, strHRName)
                   
                 End If
             End If
