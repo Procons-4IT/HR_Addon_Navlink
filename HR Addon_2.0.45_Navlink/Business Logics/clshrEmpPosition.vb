@@ -239,7 +239,9 @@ Public Class clshrEmpPosition
                 Return False
             End If
 
-
+            If oApplication.Utilities.getEdittextvalue(aForm, "47") = "" Then
+                oApplication.Utilities.setEdittextvalue(aForm, "49", "")
+            End If
 
             Dim oTemp As SAPbobsCOM.Recordset
             Dim stSQL As String
@@ -351,8 +353,14 @@ Public Class clshrEmpPosition
                                     stCode2 = oCombobox.Selected.Description
                                     oApplication.Utilities.setEdittextvalue(oForm, "18", stCode2)
                                 End If
-                            Case SAPbouiCOM.BoEventTypes.et_KEY_DOWN
+                            Case SAPbouiCOM.BoEventTypes.et_LOST_FOCUS
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)
+                                If pVal.ItemUID = "47" Then
+                                    If oApplication.Utilities.getEdittextvalue(oForm, "47") = "" Then
+                                        oApplication.Utilities.setEdittextvalue(oForm, "49", "")
+                                    End If
+                                End If
+                            Case SAPbouiCOM.BoEventTypes.et_KEY_DOWN
                                 If pVal.ItemUID = "1282" Then
                                     oForm = oApplication.SBO_Application.Forms.Item(FormUID)
                                     If oForm.Mode <> SAPbouiCOM.BoFormMode.fm_FIND_MODE Then
@@ -363,6 +371,9 @@ Public Class clshrEmpPosition
                                         oForm.Items.Item("6").Enabled = True
                                     End If
                                 End If
+                              
+
+
                                 If pVal.ItemUID = "26" And pVal.CharPressed = 9 Then
                                     Dim Expemp, CurEmp, vacPos As Integer
                                     Expemp = oApplication.Utilities.getDocumentQuantity(oApplication.Utilities.getEdittextvalue(oForm, "28"))

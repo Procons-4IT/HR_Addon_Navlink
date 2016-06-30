@@ -120,6 +120,7 @@ Public Class clshrUnit
         Try
             oMatrix = oForm.Items.Item("3").Specific
             oForm.Freeze(True)
+
             If oMatrix.Columns.Item(1).Cells.Item(oMatrix.RowCount).Specific.value = "" Then
                 oMatrix.DeleteRow(oMatrix.RowCount)
             End If
@@ -196,13 +197,10 @@ Public Class clshrUnit
             Dim strCode, strDocEntry As String
             strCode = oApplication.Utilities.getMaxCode("@Z_HR_OUNT", "Code")
             strDocEntry = oApplication.Utilities.getMaxCode("@Z_HR_OUNT", "DocEntry")
-
             If objMatrix.RowCount = 1 Then
                 oDBDSource.SetValue("Code", 0, strValue.PadLeft(8, "0"))
                 oDBDSource.SetValue("DocEntry", 0, strValue.PadLeft(8, "0"))
             Else
-                'oDBDSource.SetValue("Code", objMatrix.RowCount - 1, oDBDSource.GetValue("DocEntry", objMatrix.RowCount - 1).PadLeft(8, "0"))
-                'oDBDSource.SetValue("DocEntry", objMatrix.RowCount - 1, oDBDSource.GetValue("DocEntry", objMatrix.RowCount - 1).PadLeft(8, "0"))
                 oDBDSource.SetValue("Code", objMatrix.RowCount - 1, strCode)
                 oDBDSource.SetValue("DocEntry", objMatrix.RowCount - 1, CInt(strDocEntry))
             End If
@@ -249,7 +247,7 @@ Public Class clshrUnit
     End Sub
     Private Function Validation(ByVal aForm As SAPbouiCOM.Form) As Boolean
         oMatrix = oForm.Items.Item("3").Specific
-        Dim strcode, strcode1 As String
+        Dim strcode, strcode1, strRefCode As String
         If oMatrix.RowCount > 1 Then
 
             strcode = oApplication.Utilities.getMatrixValues(oMatrix, "V_0", oMatrix.RowCount)
@@ -260,7 +258,8 @@ Public Class clshrUnit
                 Return False
             End If
         End If
-
+        Dim oRec As SAPbobsCOM.Recordset
+        oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
         For intRow As Integer = 1 To oMatrix.RowCount
             strcode = oApplication.Utilities.getMatrixValues(oMatrix, "V_0", intRow)
             strcode1 = oApplication.Utilities.getMatrixValues(oMatrix, "V_1", intRow)
@@ -272,6 +271,37 @@ Public Class clshrUnit
 
             If strcode = "" And strcode1 <> "" Then
                 oApplication.Utilities.Message("UnitCode can not be empty", SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                oMatrix.Columns.Item("V_0").Cells.Item(oMatrix.RowCount).Click(SAPbouiCOM.BoCellClickType.ct_Regular)
+                Return False
+            End If
+            For intLoop As Integer = intRow + 1 To oMatrix.RowCount
+                strcode1 = oApplication.Utilities.getMatrixValues(oMatrix, "V_0", intLoop)
+                If strcode1 <> "" Then
+                    If strcode.ToUpper = strcode1.ToUpper Then
+                        oApplication.Utilities.Message("Unit code already exists : " & strcode, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
+                        Return False
+
+                    End If
+                End If
+            Next
+        Next
+        Return True
+    End Function
+    Private Function Validation_Duplicate(ByVal aForm As SAPbouiCOM.Form) As Boolean
+        oMatrix = oForm.Items.Item("3").Specific
+        Dim strcode, strcode1, strRefCode As String
+        Dim oRec As SAPbobsCOM.Recordset
+        oRec = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        For intRow As Integer = 1 To oMatrix.RowCount
+            strRefCode = oApplication.Utilities.getMatrixValues(oMatrix, "V_13", intRow)
+            strcode = oApplication.Utilities.getMatrixValues(oMatrix, "V_0", intRow)
+            If strRefCode = "" Then
+                oRec.DoQuery("Select * from ""@Z_HR_OUNT"" where ""U_Z_UnitCode""='" & strcode & "'")
+            Else
+                oRec.DoQuery("Select * from ""@Z_HR_OUNT"" where ""U_Z_UnitCode""='" & strcode & "' and ""Code""<>'" & strRefCode & "'")
+            End If
+            If oRec.RecordCount > 0 Then
+                oApplication.Utilities.Message("Unit code already exists...: " & strcode, SAPbouiCOM.BoStatusBarMessageType.smt_Error)
                 oMatrix.Columns.Item("V_0").Cells.Item(oMatrix.RowCount).Click(SAPbouiCOM.BoCellClickType.ct_Regular)
                 Return False
             End If
@@ -293,11 +323,16 @@ Public Class clshrUnit
                             oForm = oApplication.SBO_Application.Forms.Item(FormUID)
                             objMatrix = oForm.Items.Item("3").Specific
                             strVal = oApplication.Utilities.getMatrixValues(objMatrix, "V_0", pVal.Row)
-                            If oApplication.Utilities.ValidateCode(strVal, "UNIT") = True Then
-                                BubbleEvent = False
-                                Exit Sub
+                            If strVal <> "" Then
+                                If oApplication.Utilities.getMatrixValues(objMatrix, "V_13", pVal.Row) <> "" Then
+                                    If oApplication.Utilities.ValidateCode(strVal, "UNIT") = True Then
+                                        BubbleEvent = False
+                                        Exit Sub
+                                    End If
+                                End If
                             End If
                         End If
+
                         Select Case pVal.EventType
                             Case SAPbouiCOM.BoEventTypes.et_KEY_DOWN
                                 oForm = oApplication.SBO_Application.Forms.Item(FormUID)
@@ -315,11 +350,18 @@ Public Class clshrUnit
                                     End If
                                     InsertCodeAndDocEntry(oForm)
                                     EnblMatrixAfterUpdate(oApplication.SBO_Application, oApplication.Company, oForm)
+                                    'If Validation_Duplicate(oForm) = False Then
+                                    '    oForm.Freeze(False)
+                                    '    BubbleEvent = False
+                                    '    Exit Sub
+                                    'End If
                                     oForm.Freeze(False)
                                 End If
                         End Select
 
                     Case False
+
+                       
                         If ((pVal.EventType = SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED) And (pVal.ItemUID = "1")) Then
                             oForm = oApplication.SBO_Application.Forms.Item(FormUID)
                             oForm.Freeze(True)
@@ -369,14 +411,22 @@ Public Class clshrUnit
                         For intRow As Integer = 1 To objMatrix.RowCount
                             If objMatrix.IsRowSelected(intRow) Then
                                 strValue = oApplication.Utilities.getMatrixValues(objMatrix, "V_0", intRow)
-                                If oApplication.Utilities.ValidateCode(strValue, "UNIT") = True Then
-                                    BubbleEvent = False
-                                    Exit Sub
+                                If strValue <> "" And oApplication.Utilities.getMatrixValues(objMatrix, "V_13", intRow) <> "" Then
+                                    If oApplication.Utilities.ValidateCode(strValue, "UNIT") = True And strValue <> "" Then
+                                        BubbleEvent = False
+                                        Exit Sub
+                                    Else
+                                        DeleteRow(oForm, intRow)
+                                        BubbleEvent = False
+                                        Exit Sub
+                                    End If
                                 Else
                                     DeleteRow(oForm, intRow)
                                     BubbleEvent = False
                                     Exit Sub
                                 End If
+
+                               
                             End If
                         Next
                     End If
