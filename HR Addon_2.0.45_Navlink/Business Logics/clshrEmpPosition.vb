@@ -558,20 +558,27 @@ Public Class clshrEmpPosition
                     oTest = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                     otest1 = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
                     oTest.DoQuery("Select isnull(max(posid),0)+1 from OHPS")
-                    'Dim strdocnum As String
-                    'Dim stXML As String = BusinessObjectInfo.ObjectKey
-                    'stXML = stXML.Replace("<?xml version=""1.0"" encoding=""UTF-16"" ?><Position MappingParams><DocEntry>", "")
-                    'stXML = stXML.Replace("</DocEntry></Position MappingParams>", "")
-                    'stXML = stXML.Replace("<?xml version=""1.0"" encoding=""UTF-16"" ?><Position Mapping ListParams><DocEntry>", "")
-                    'stXML = stXML.Replace("</DocEntry></Position Mapping ListParams>", "")
-                    intNumber = oTest.Fields.Item(0).Value
+                    Dim strdocnum As String
+                    Dim stXML As String = BusinessObjectInfo.ObjectKey
+                    stXML = stXML.Replace("<?xml version=""1.0"" encoding=""UTF-16"" ?><Position MappingParams><DocEntry>", "")
+                    stXML = stXML.Replace("</DocEntry></Position MappingParams>", "")
+                    stXML = stXML.Replace("<?xml version=""1.0"" encoding=""UTF-16"" ?><Position Mapping ListParams><DocEntry>", "")
+                    stXML = stXML.Replace("</DocEntry></Position Mapping ListParams>", "")
+                    intNumber = stXML 'oTest.Fields.Item(0).Value
                     otest1.DoQuery("select * from [@Z_HR_OPOSIN]  where docentry=" & intNewnumber)
                     If otest1.RecordCount > 0 Then
                         strpositionname = otest1.Fields.Item("U_Z_PosName").Value
                         posCode = otest1.Fields.Item("U_Z_PosCode").Value
                         strFrgnName = otest1.Fields.Item("U_Z_FrgnName").Value
                         '  strstring = "Select * from ohps where U_Z_POSRef='" & CInt(intNewnumber) & "'"
+                        Dim strUnitCode As String = otest1.Fields.Item("U_Z_UnitCode").Value
+                        Dim strUnitName As String = otest1.Fields.Item("U_Z_UnitName").Value
+                        oTest.DoQuery("Update ""@Z_HR_ORGST"" set U_Z_UnitCode='" & strUnitCode & "',U_Z_UnitName='" & strUnitName & "' where U_Z_Poscode='" & posCode & "'")
+
+                        oTest.DoQuery("Update OHEM set U_Z_HR_UnitName='" & strUnitName & "' where U_Z_HR_PosiCode='" & posCode & "'")
+
                         strstring = "Select * from ohps where Name='" & posCode & "'"
+
                         oTest.DoQuery(strstring)
                         If oTest.RecordCount <= 0 Then
                             Try
