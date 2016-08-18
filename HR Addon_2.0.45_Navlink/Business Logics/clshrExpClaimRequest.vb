@@ -946,6 +946,8 @@ Public Class clshrExpClaimRequest
         Dim strMdbFilePath As String
         Dim oProcesses() As Process
         Try
+            Dim aform As New System.Windows.Forms.Form
+            aform.TopMost = True
             oProcesses = Process.GetProcessesByName("SAP Business One")
             If oProcesses.Length <> 0 Then
                 For i As Integer = 0 To oProcesses.Length - 1
@@ -953,7 +955,9 @@ Public Class clshrExpClaimRequest
                     If oDialogBox.ShowDialog(MyWindow) = DialogResult.OK Then
                         strMdbFilePath = oDialogBox.FileName
                         strFilepath = oDialogBox.FileName
+                        Exit For
                     Else
+                        Exit For
                     End If
                 Next
             End If

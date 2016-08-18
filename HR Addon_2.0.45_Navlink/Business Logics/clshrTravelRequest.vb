@@ -183,7 +183,7 @@ Public Class clshrTravelRequest
         Dim strqry, strcode As String
         Dim oRect As SAPbobsCOM.Recordset
         oRect = oApplication.Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
-        strqry = "Select * from [@Z_HR_OASSTP] where Code=" & stCode & ""
+        strqry = "Select * from [@Z_HR_OASSTP] where Code='" & stCode & "'"
         oRect.DoQuery(strqry)
         If oRect.RecordCount > 0 Then
             oApplication.Utilities.setEdittextvalue(aForm, "23", oRect.Fields.Item("U_Z_TraName").Value)
